@@ -1,0 +1,347 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 1px solid #333;
+    width: 100%;
+}
+
+.logo {
+    /* Remplacé width: 100% par max-width et height auto pour mieux s'adapter */
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    max-height: 150px; /* Ajout d'une hauteur max pour éviter un logo trop grand */
+}
+
+/* Styles des boutons de catégorie et sous-catégorie SUPPRIMÉS */
+
+.loading-message {
+    text-align: center;
+    padding: 60px 20px;
+    font-style: italic;
+    color: #888;
+    min-height: 240px; /* Correspond à la hauteur de l'iframe */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.iframe-container {
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #222;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    min-height: 240px; /* Hauteur minimale */
+    position: relative; /* Pour positionner la barre et le bouton next */
+}
+
+#suno-iframe {
+    display: block;
+    border: none;
+    width: 100%;
+    height: 240px; /* Hauteur fixe pour l'iframe */
+    transition: opacity 0.3s ease;
+}
+
+/* .controls { ... } SUPPRIMÉ */
+
+.button-next {
+    display: inline-block;
+    background-color: #5c67f2;
+    color: white;
+    padding: 10px 20px; /* Légèrement réduit */
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9em;  /* Légèrement réduit */
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(92, 103, 242, 0.2); /* Ombre réduite */
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10; /* S'assurer qu'il est au-dessus de l'iframe si besoin */
+}
+
+.button-next:hover {
+    background-color: #4a54cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(92, 103, 242, 0.3); /* Ombre ajustée */
+}
+
+.button-next:focus {
+    outline: 2px solid #5c67f2;
+    outline-offset: 2px;
+}
+
+.support-section {
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px;
+    background-color: rgba(92, 103, 242, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(92, 103, 242, 0.3);
+}
+
+.support-title {
+    font-size: 1.5em;
+    color: #5c67f2;
+    margin-bottom: 15px;
+}
+
+.support-text {
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: #aaa;
+}
+
+.support-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.support-button {
+    display: inline-block;
+    background-color: #f28c31; /* Orange Tipeee */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.support-button.paypal-button {
+    background-color: #0070ba; /* Bleu PayPal */
+}
+
+
+.support-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre générique au survol */
+}
+.support-button.paypal-button:hover {
+     box-shadow: 0 4px 8px rgba(0, 112, 186, 0.4); /* Ombre bleue */
+}
+.support-button:not(.paypal-button):hover { /* Style spécifique pour Tipeee au survol si différent */
+     box-shadow: 0 4px 8px rgba(242, 140, 49, 0.4); /* Ombre orange */
+}
+
+
+.attribution { /* Style pour une éventuelle attribution, si nécessaire */
+    margin-top: 40px;
+    padding-top: 20px;
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    border-top: 1px solid #333;
+}
+
+.attribution a {
+    color: #5c67f2;
+    text-decoration: none;
+}
+
+.attribution a:hover {
+    text-decoration: underline;
+}
+
+.now-playing {
+    text-align: center;
+    margin-top: 10px; /* Réduit l'espace */
+    margin-bottom: 15px; /* Ajout d'un espace en dessous */
+    font-size: 0.9em;
+    color: #aaa;
+    min-height: 1.2em; /* Pour éviter les sauts de layout */
+    padding: 0 10px; /* Empêche le texte de coller aux bords */
+    word-wrap: break-word; /* Coupe les mots longs si nécessaire */
+}
+
+#initial-play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: rgba(34, 34, 34, 0.9); /* Légèrement plus opaque */
+    border-radius: 8px; /* Match le conteneur */
+    cursor: pointer;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out; /* Ajout de visibility */
+    z-index: 20; /* Au-dessus de l'iframe et du bouton next */
+    visibility: visible; /* Visible par défaut */
+}
+
+#initial-play-overlay.hidden {
+    opacity: 0;
+    visibility: hidden; /* Cache complètement l'élément */
+    pointer-events: none;
+}
+
+#start-radio-button {
+    background-color: #5c67f2;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+#start-radio-button:hover {
+    background-color: #4a54cc;
+    transform: scale(1.05);
+}
+
+#start-radio-button:focus {
+    outline: 2px solid #5c67f2;
+    outline-offset: 2px;
+}
+
+.overlay-icon {
+    font-size: 3em;
+    color: #5c67f2;
+    margin-bottom: 10px;
+    animation: pulse 2s infinite ease-in-out; /* Ajout d'une petite animation */
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+
+.overlay-text {
+    font-size: 0.9em;
+    color: #ccc;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    height: 4px; /* Légèrement plus fin */
+    background: #5c67f2;
+    width: 0;
+    /* Transition plus douce pour la progression */
+    transition: width 0.5s linear;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5; /* Sous le bouton next mais au-dessus de l'iframe */
+}
+
+/* Préchargeur */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #121212;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    visibility: visible;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #5c67f2;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px; /* Espace entre spinner et texte */
+}
+
+.preloader p {
+    color: #aaa; /* Couleur du texte du preloader */
+}
+
+.preloader.hidden {
+    opacity: 0;
+    visibility: hidden; /* Cache et désactive l'interaction */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Styles responsifs */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    /* .controls { flex-direction: column; } SUPPRIMÉ */
+
+    /* Styles pour .category-button et .subcategory-button SUPPRIMÉS */
+
+    #start-radio-button {
+        padding: 12px 24px;
+        font-size: 1em;
+    }
+
+    .overlay-icon {
+        font-size: 2.5em;
+    }
+
+    .button-next {
+        padding: 8px 16px;
+        font-size: 0.8em;
+        bottom: 8px; /* Ajusté */
+        right: 8px;  /* Ajusté */
+    }
+
+    .support-buttons {
+        gap: 10px; /* Réduit l'écart sur mobile */
+    }
+    .support-button {
+        padding: 8px 16px; /* Boutons de support plus petits */
+        font-size: 0.9em;
+    }
+    .logo {
+        max-height: 100px; /* Logo plus petit sur mobile */
+    }
+    .now-playing {
+        font-size: 0.85em; /* Texte now playing plus petit */
+    }
+}
+
+/* Adaptation pour les petits écrans - styles pour catégories supprimés */
+/*@media screen and (max-width: 480px) { ... }*/
+
+/* Pour les écrans très étroits - styles pour catégories supprimés */
+/*@media screen and (max-width: 360px) { ... }*/

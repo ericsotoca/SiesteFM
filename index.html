@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sieste FM - La Radio qui vous endort en douceur.</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Préchargement du logo .png comme utilisé dans le HTML -->
+    <link rel="preload" href="logo.png" as="image">
+    <!-- Ajout potentiel du manifeste pour PWA -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Ajout potentiel d'icônes pour iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png"> <!-- Exemple, ajuster le chemin -->
+
+</head>
+<body>
+    <div id="preloader" class="preloader">
+        <div class="spinner"></div>
+        <p>Chargement de Sieste FM...</p>
+    </div>
+
+    <header>
+        <!-- Utilisation de logo.png comme défini dans le preload -->
+        <img src="logo.png" alt="Sieste FM" class="logo">
+    </header>
+
+    <div class="iframe-container" id="player-container">
+        <div id="initial-play-overlay">
+            <span class="overlay-icon" aria-hidden="true">🎵</span>
+            <!-- L'aria-label peut être simplifié si "SOTOCA" n'est plus pertinent -->
+            <button id="start-radio-button" aria-label="Lancer la radio Sieste FM">Lancer la Radio</button>
+            <p class="overlay-text">(Cliquez pour démarrer)</p>
+        </div>
+        <div id="iframe-target"></div>
+        <div class="progress-bar" id="progress-bar"></div>
+        <button class="button-next" id="next-track">Morceau suivant</button>
+    </div>
+
+    <div class="now-playing" aria-live="polite">
+        <p id="now-playing-text"></p>
+    </div>
+
+    <!-- La div 'controls' est vide, pourrait être supprimée si non utilisée pour autre chose -->
+    <div class="controls">
+        <!-- Vide -->
+    </div>
+
+    <div class="support-section">
+        <h2 class="support-title">SOUTENIR Sieste FM</h2>
+        <p class="support-text">Cette radio est sans publicité et entièrement gratuite. Votre soutien nous permet de continuer à offrir une expérience musicale unique et sans interruption.</p>
+        <div class="support-buttons">
+            <a href="https://www.paypal.com/donate/?hosted_button_id=S8GPJPJYS79WS" target="_blank" class="support-button paypal-button">Faire un don via PayPal</a>
+            <a href="https://fr.tipeee.com/SiesteFM/" target="_blank" class="support-button">Nous soutenir sur Tipeee</a>
+        </div>
+    </div>
+
+    <!-- Script JS à la fin du body -->
+    <script src="script.js"></script>
+</body>
+</html>
