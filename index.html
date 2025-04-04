@@ -4,56 +4,858 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sieste FM - La Radio qui vous endort en douceur.</title>
-    <link rel="stylesheet" href="styles.css">
-    <!-- Préchargement du logo -->
+    <!-- CSS et JS sont intégrés ci-dessous -->
     <link rel="preload" href="logo.png" as="image">
-    <!-- Manifeste pour PWA -->
     <link rel="manifest" href="manifest.json">
-    <!-- Icônes pour iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png"> <!-- Ajuster le chemin si nécessaire -->
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+
+    <style>
+        /* --- START OF COMBINED CSS --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0D1B2A;
+            color: #ffffff;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .logo {
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 150px;
+            max-width: 100%;
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 60px 20px;
+            font-style: italic;
+            color: #aaa;
+            min-height: 240px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .iframe-container {
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #1C2C3A;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            min-height: 240px;
+            position: relative;
+        }
+
+        #suno-iframe {
+            display: block;
+            border: none;
+            width: 100%;
+            height: 240px;
+            transition: opacity 0.3s ease;
+        }
+
+        .button-next {
+            display: inline-block;
+            background-color: #5c67f2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+
+        .button-next:hover {
+            background-color: #4a54cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .button-next:focus {
+            outline: 2px solid #5c67f2;
+            outline-offset: 2px;
+        }
+        .button-next:disabled {
+             background-color: #4a54cc;
+             opacity: 0.6;
+             cursor: not-allowed;
+             transform: none;
+             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .support-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 20px;
+            background-color: rgba(92, 103, 242, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(92, 103, 242, 0.3);
+        }
+
+        .support-title {
+            font-size: 1.5em;
+            color: #5c67f2;
+            margin-bottom: 15px;
+        }
+
+        .support-text {
+            margin-bottom: 20px;
+            line-height: 1.5;
+            color: #ccc;
+        }
+
+        .support-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .support-button {
+            display: inline-block;
+            background-color: #f28c31;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .support-button.paypal-button {
+            background-color: #0070ba;
+        }
+        .support-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .support-button.paypal-button:hover {
+             box-shadow: 0 4px 8px rgba(0, 112, 186, 0.4);
+        }
+        .support-button:not(.paypal-button):hover {
+             box-shadow: 0 4px 8px rgba(242, 140, 49, 0.4);
+        }
+
+        /* --- Styles pour #now-playing (caché) --- */
+        #now-playing {
+            display: none; /* CACHE COMPLETEMENT L'ELEMENT */
+        }
+        /* Les règles pour #now-playing-text sont inutiles car le parent est caché */
+
+
+        /* --- START OF nap-timer CSS --- */
+        #nap-duration-selector-area {
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(28, 44, 58, 0.7);
+            border-radius: 8px;
+        }
+
+        #nap-buttons-container { /* Nouveau conteneur pour les boutons de durée */
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Espace entre les boutons */
+            flex-wrap: wrap; /* Passage à la ligne sur petits écrans */
+            margin-bottom: 10px; /* Espace avant affichage timer/cancel */
+        }
+
+        .duration-button { /* Style commun pour les boutons de durée */
+            padding: 8px 15px;
+            border: 1px solid #5c67f2; /* Bordure pour indiquer sélectionnable */
+            border-radius: 20px; /* Bordures arrondies */
+            background-color: transparent; /* Fond transparent par défaut */
+            color: #c5c5c5; /* Couleur texte gris clair */
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .duration-button:hover {
+            background-color: rgba(92, 103, 242, 0.2); /* Léger fond au survol */
+            color: #ffffff;
+        }
+
+        .duration-button.active { /* Style pour le bouton ACTIF */
+            background-color: #5c67f2; /* Fond plein */
+            color: white; /* Texte blanc */
+            border-color: #5c67f2; /* Bordure de la même couleur */
+        }
+        /* On désactive le hover quand un bouton est actif pour éviter confusion */
+        .duration-button.active:hover {
+             background-color: #5c67f2;
+             color: white;
+        }
+
+        #cancel-nap-timer { /* Style spécifique pour Annuler */
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f44336; /* Rouge pour annuler */
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: 10px; /* Espace si à côté du timer */
+             vertical-align: middle;
+        }
+
+        #cancel-nap-timer:hover {
+            background-color: #d32f2f; /* Rouge plus foncé */
+        }
+
+        #cancel-nap-timer.hidden {
+             display: none;
+         }
+
+        #nap-timer-display {
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #a5f3fc;
+            min-height: 1.2em;
+             display: inline-block; /* Pour s'aligner avec cancel */
+             vertical-align: middle;
+        }
+
+        #nap-timer-display.hidden {
+            display: none;
+        }
+        /* --- END OF nap-timer CSS --- */
+
+        /* --- START OF Overlay styles --- */
+         #initial-play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background-color: rgba(13, 27, 42, 0.9);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+            z-index: 20;
+            visibility: visible;
+            opacity: 1;
+        }
+        #initial-play-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #start-radio-button { background-color: #5c67f2; color: white; padding: 15px 30px; border: none; border-radius: 30px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.3s ease; margin-top: 15px; }
+        #start-radio-button:hover { background-color: #4a54cc; transform: scale(1.05); }
+        #start-radio-button:focus { outline: 2px solid #5c67f2; outline-offset: 2px; }
+        .overlay-icon { font-size: 3em; color: #5c67f2; margin-bottom: 10px; animation: pulse 2s infinite ease-in-out; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .overlay-text { font-size: 0.9em; color: #ccc; margin-top: 15px; }
+        /* --- END OF Overlay styles --- */
+
+        /* --- START OF Preloader styles --- */
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0D1B2A; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; opacity: 1; transition: opacity 0.5s ease-out, visibility 0.5s ease-out; visibility: visible; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #5c67f2; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        #preloader p { color: #aaa; }
+        #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* --- END OF Preloader styles --- */
+
+        /* --- START OF Responsive styles --- */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            header { padding: 15px 0; margin-bottom: 20px; border-bottom: none; }
+            .logo { max-width: 80%; max-height: 100px; }
+            #start-radio-button { padding: 12px 24px; font-size: 1em; }
+            .overlay-icon { font-size: 2.5em; }
+            .button-next { padding: 8px 16px; font-size: 0.8em; bottom: 8px; right: 8px; }
+            .support-section { padding: 15px; margin: 25px 0; }
+            .support-buttons { gap: 10px; }
+            .support-button { padding: 8px 16px; font-size: 0.9em; }
+            /* #now-playing responsive styles removed */
+            .iframe-container { margin-bottom: 10px; }
+
+            /* Ajustements Nap Timer pour mobile */
+            #nap-duration-selector-area { padding: 10px; margin-bottom: 15px; }
+            #nap-buttons-container { gap: 8px; } /* Moins d'espace entre boutons */
+            .duration-button { padding: 6px 12px; font-size: 0.85em; }
+            #cancel-nap-timer { padding: 6px 12px; font-size: 0.85em; }
+            #nap-timer-display { font-size: 1em; margin-top: 8px; }
+        }
+        /* --- END OF Responsive styles --- */
+
+    </style>
 </head>
 <body>
-    <div id="preloader" class="preloader">
+    <div id="preloader">
         <div class="spinner"></div>
         <p>Chargement de Sieste FM...</p>
     </div>
 
     <header>
-        <img src="logo.png" alt="Sieste FM" class="logo" style="width: 100%; height: auto;">
+        <img src="logo.png" alt="Sieste FM" class="logo">
     </header>
+
+    <!-- Zone pour le sélecteur de durée de sieste (avec boutons) -->
+    <div id="nap-duration-selector-area">
+        <div id="nap-buttons-container">
+            <button class="duration-button" data-duration="10">10 min</button>
+            <button class="duration-button" data-duration="15">15 min</button>
+            <button class="duration-button" data-duration="30">30 min</button>
+            <button class="duration-button active" data-duration="0">Illimité</button> <!-- Actif par défaut -->
+        </div>
+        <div> <!-- Conteneur pour affichage timer et bouton annuler -->
+            <div id="nap-timer-display" class="hidden"></div>
+            <button id="cancel-nap-timer" class="hidden">Annuler Minuteur</button>
+        </div>
+    </div>
 
     <div class="iframe-container" id="player-container">
         <div id="initial-play-overlay">
             <span class="overlay-icon" aria-hidden="true">🎵</span>
-            <button id="start-radio-button" aria-label="Lancer la radio Sieste FM">Lancer la Radio</button>
-            <p class="overlay-text">(Cliquez pour démarrer)</p>
+            <button id="start-radio-button">Lancer Sieste FM</button>
         </div>
-        <div id="iframe-target"></div>
-        <div class="progress-bar" id="progress-bar"></div>
-        <button class="button-next" id="next-track">Morceau suivant</button>
+        <div id="iframe-target">
+            <div class="loading-message" id="iframe-loading-placeholder">Chargement du lecteur...</div>
+        </div>
+         <button id="next-track" class="button-next">Morceau Suivant ⏭️</button>
     </div>
 
-    <div class="now-playing" aria-live="polite">
-        <p id="now-playing-text"></p> <!-- Ne sera plus utilisé pour Titre/Artiste -->
+    <!-- DIV #now-playing EST MAINTENANT CACHÉE PAR CSS -->
+    <div id="now-playing">
+        <p id="now-playing-text"></p>
     </div>
-
-    <!-- La div 'controls' est vide et non stylée, peut être supprimée -->
-    <!-- <div class="controls"> -->
-        <!-- Vide -->
-    <!-- </div> -->
 
     <div class="support-section">
-        <h2 class="support-title">SOUTENIR Sieste FM</h2>
-        <p class="support-text">Cette radio est sans publicité et entièrement gratuite. Votre soutien nous permet de continuer à offrir une expérience musicale unique et sans interruption.</p>
-        <div class="support-buttons">
-            <a href="https://www.paypal.com/donate/?hosted_button_id=S8GPJPJYS79WS" target="_blank" class="support-button paypal-button">Faire un don via PayPal</a>
-            <a href="https://fr.tipeee.com/SiesteFM/" target="_blank" class="support-button">Nous soutenir sur Tipeee</a>
-        </div>
+         <h2 class="support-title">SOUTENIR Sieste FM</h2>
+         <p class="support-text">Cette radio est sans publicité et entièrement gratuite. Votre soutien nous permet de continuer à offrir une expérience musicale unique et sans interruption.</p>
+         <div class="support-buttons">
+             <a href="https://www.paypal.com/donate/?hosted_button_id=S8GPJPJYS79WS" target="_blank" class="support-button paypal-button">Faire un don via PayPal</a>
+             <a href="https://fr.tipeee.com/SiesteFM/" target="_blank" class="support-button">Nous soutenir sur Tipeee</a>
+         </div>
     </div>
 
-    <!-- Script JS à la fin du body -->
-    <script src="script.js"></script>
+    <script>
+        // --- START OF COMBINED JAVASCRIPT ---
+
+        // Liste complète des pistes
+        const sunoTracks = [
+             { "id": "674e86cb-0395-414a-a291-a4c11a9efc4d", "title": "50 decimal places of pi", "artist": "Suno AI", "categorie": "Esprit Aiguisé", "duration": 180 },
+            { "id": "1be45c7f-efee-4288-bb46-24bc4ac633a6", "title": "A Walk in the Park", "artist": "Suno AI", "categorie": "Calme Puissant", "duration": 131 },
+            { "id": "25a32452-1bfd-4791-b378-7584a0be64f5", "title": "Aerial Awakening", "artist": "Zneip.", "categorie": "Calme Puissant", "duration": 214 },
+            { "id": "295f7691-9fe1-40d0-bd6d-e7a047d32b64", "title": "After the rain", "artist": "sonoa", "categorie": "Esprit Aiguisé", "duration": 169 },
+            { "id": "afd7cad2-6112-4670-9274-378468a1c59d", "title": "After the rain", "artist": "RareRecordLabels1439", "categorie": "Calme Puissant", "duration": 239 },
+            { "id": "137ba8ff-3d61-4d79-acfe-7644999cdba8", "title": "Are You Not Entertained?", "artist": "Rattvisa.", "categorie": "Horizon Infini", "duration": 230 },
+            { "id": "3a09ffcc-f677-42ad-9ec0-dd2e01b7adca", "title": "Aurora Dance (Instrumental)", "artist": "Xian - ExclusiveKnob421", "categorie": "Calme Puissant", "duration": 140 },
+            { "id": "f8373d7f-c0a3-4a7d-81e0-9313e1309fa0", "title": "Banana Republic", "artist": "YouNoWhooIs", "categorie": "Esprit Aiguisé", "duration": 165 },
+            { "id": "533b9834-52a5-4100-8d05-9ef605a4e715", "title": "Blues in the light of dawn", "artist": "GROOVEBOT.", "categorie": "Calme Puissant", "duration": 183 },
+            { "id": "16555cd3-3aab-4f6d-b02c-8c15ebf6a8f1", "title": "Cade la neve", "artist": "Jazz56", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "d2002f05-15f7-4490-bc84-dfdb6f033b90", "title": "Caminhos da Vida", "artist": "Sueli.", "categorie": "Horizon Infini", "duration": 240 },
+            { "id": "948b8276-6714-460f-b526-033354e094ce", "title": "Cancer", "artist": "Joy'elle", "categorie": "Quête Sauvage", "duration": 157 },
+            { "id": "a3bc664e-8ac0-4072-b340-2e847b240081", "title": "Cese y Desista", "artist": "Tiborio.", "categorie": "Quête Sauvage", "duration": 265 },
+            { "id": "4ec14116-ac9b-49e3-ae62-99eb2f1ac0c2", "title": "Circles (Remastered)", "artist": "Claraco.", "categorie": "Esprit Aiguisé", "duration": 239 },
+            { "id": "6f9a9ed2-0082-4536-8db9-6cfca9c621ef", "title": "Corner lights", "artist": "HiddenHand.", "categorie": "Décollage Express", "duration": 184 },
+            { "id": "d012de10-e877-43f1-92f4-9bd2e706f52d", "title": "🎶 Darlin', Don't You Go 🎶", "artist": "RetroDream.", "categorie": "Calme Puissant", "duration": 206 },
+            { "id": "5a285fbc-f64a-418a-8b2e-05e3e7990899", "title": "Deep Night", "artist": "Moisty.", "categorie": "Décollage Express", "duration": 185 },
+            { "id": "e48c0ee8-24c8-459b-8d91-469dbd6fc3a5", "title": "Dialectic (accept it)", "artist": "yolkhead", "categorie": "Calme Puissant", "duration": 239 },
+            { "id": "a3e445c8-b7e6-4f11-9c5c-2e7281c8a68e", "title": "Ethereal Journey", "artist": "GROOVEBOT.", "categorie": "Calme Puissant", "duration": 160 },
+            { "id": "b4661e87-97c3-4b6e-87ca-f31f47ac40ef", "title": "Eu Não Ando Sumido", "artist": "Roberto na Área.", "categorie": "Calme Puissant", "duration": 168 },
+            { "id": "2160a428-d7c4-4892-b250-9a739a60e475", "title": "Fuja de quem não quer te perder mas não sabe te amar", "artist": "Roberto na Área.", "categorie": "Calme Puissant", "duration": 157 },
+            { "id": "176e197f-0656-4351-9516-1ebc05d4855f", "title": "Her First Heartbreak", "artist": "Brandon Luke.", "categorie": "Calme Puissant", "duration": 185 },
+            { "id": "3107d309-3316-4b00-bc7c-f590038d9e5b", "title": "I Can Wait 100 Years", "artist": "Wetcircuit.", "categorie": "Esprit Aiguisé", "duration": 265 },
+            { "id": "0e09c799-1259-48a0-9810-c8b9b6dab30d", "title": "I Miss You Remix", "artist": "Eclonix.", "categorie": "Horizon Infini", "duration": 238 },
+            { "id": "ffa48fbf-ac87-4a02-8cf2-f3766f518d58", "title": "I Spent 3000 Credits on This Song", "artist": "Nanashi_Zero🀄️", "categorie": "Décollage Express", "duration": 194 },
+            { "id": "fd95f5af-5b7f-493b-918c-8c2cf7380db4", "title": "Inclusive Backdoor Man (Pilloe mix)", "artist": "CelticSemitone.", "categorie": "Quête Sauvage", "duration": 190 },
+            { "id": "3899e808-d76f-48d4-b850-3ab3c6da6a88", "title": "Island Breeze", "artist": "DrollFire383.", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "1892cdb4-3eca-41fe-b341-e4cdc3fca285", "title": "Jetzt waßt wi da oalles besser (Remastered)", "artist": "Jenseits der Grenzen", "categorie": "Quête Sauvage", "duration": 187 },
+            { "id": "e9e6a0fb-d175-4678-a1a0-b8ab100e3d37", "title": "Kangaroo Rock", "artist": "JeanMiK2.", "categorie": "Quête Sauvage", "duration": 165 },
+            { "id": "4d8aac83-9cf6-48ce-af71-0b818df806db", "title": "康德之桥", "artist": "ReservedTremolo210.", "categorie": "Horizon Infini", "duration": 229 },
+            { "id": "75b62359-9b3e-4ffe-839b-0eb7c11de71e", "title": "Let's Take a Chance", "artist": "MyDreamSongs.", "categorie": "Calme Puissant", "duration": 213 },
+            { "id": "4ed9cd17-d8e9-4ab9-9514-e83e7597886a", "title": "Lokah samastah sukhino bhavantu", "artist": "Sotoca AI.", "categorie": "Horizon Infini", "duration": 118 },
+            { "id": "b50869d5-fd45-4219-987b-22d68621178e", "title": "Love and Peace", "artist": "Vibe Music Ai Records.", "categorie": "Calme Puissant", "duration": 194 },
+            { "id": "6805b1a2-1700-41b3-80db-c285045e99e8", "title": "Maylo", "artist": "Jenseits der Grenzen", "categorie": "Horizon Infini", "duration": 223 },
+            { "id": "ed4bc352-89f2-4f08-b21c-3fef7cb86245", "title": "Minute By Minute", "artist": "Brado with the face for radio", "categorie": "Esprit Aiguisé", "duration": 205 },
+            { "id": "917b4a0f-a658-4476-a00d-a8b1ba08f242", "title": "My Gal Done Got Crazy", "artist": "BrainBendersBanter.", "categorie": "Quête Sauvage", "duration": 227 },
+            { "id": "1f54ea49-dddd-47b3-a3d3-264f1579caa0", "title": "No apologies (Remastered)", "artist": "Ovi", "categorie": "Esprit Aiguisé", "duration": 151 },
+            { "id": "9d601e01-1282-4a76-afb5-b710edc38f8f", "title": "Onde cristalline de sérénité", "artist": "JeanMiK2.", "categorie": "Calme Puissant", "duration": 144 },
+            { "id": "aa0febaa-6c8b-444b-a34f-db5155272b2b", "title": "Peaceful Meadow", "artist": "Suno AI", "categorie": "Calme Puissant", "duration": 152 },
+            // { "id": "6805b1a2-1700-41b3-80db-c285045e99e8", "title": "PODŁOŻE BUJANE", ... }, // ID dupliqué
+            { "id": "72fd52d4-bb7e-48aa-a5e3-0115540c5a62", "title": "Pulse Beneath the Waves", "artist": "Sotoca AI.", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "67764712-b129-4f78-bab2-1c03e2014655", "title": "Rambling Railroad", "artist": "JeanMiK2.", "categorie": "Horizon Infini", "duration": 133 },
+            { "id": "d4cd5909-e7cc-4751-a6e1-f7a28f44808a", "title": "Reflections in Solitude", "artist": "Henryhan", "categorie": "Calme Puissant", "duration": 179 },
+            { "id": "5d4edb40-0565-4142-9758-6b3a90f6a2fd", "title": "Reggae Love Vibes", "artist": "Suno AI.", "categorie": "Horizon Infini", "duration": 225 },
+            { "id": "1dba28fb-3dfa-41b6-b438-cc81b587d40c", "title": "Saudade", "artist": "GROOVEBOT.", "categorie": "Horizon Infini", "duration": 219 },
+            { "id": "8cc87e22-af6f-46fb-9d8a-ed1623547c31", "title": "Serene Lake", "artist": "Suno AI", "categorie": "Esprit Aiguisé", "duration": 223 },
+            { "id": "3cc18362-3842-405b-9368-3a651cc0f9d1", "title": "Slow Groove Horizon", "artist": "Sotoca AI.", "categorie": "Esprit Aiguisé", "duration": 240 },
+            { "id": "b9d4abb4-1df8-40c5-952c-10e72f16df54", "title": "Sunrise Symphony", "artist": "Suno AI", "categorie": "Calme Puissant", "duration": 198 },
+            { "id": "70d69e22-05ce-477e-942e-cde1cd4da747", "title": "Sunset in early November", "artist": "WryConductor408.", "categorie": "Horizon Infini", "duration": 240 },
+            { "id": "990e18ee-59a7-4e4a-88fe-5300347faa31", "title": "Сила Думки", "artist": "Tosik.", "categorie": "Horizon Infini", "duration": 240 },
+            { "id": "cf95498e-1031-466d-95bc-b8e8c067d2f4", "title": "The Last Dance", "artist": "Suno AI", "categorie": "Horizon Infini", "duration": 219 },
+            { "id": "b6fcebe0-7eb9-4829-98c2-159602f24161", "title": "The Journey Begins", "artist": "Suno AI.", "categorie": "Horizon Infini", "duration": 253 },
+            { "id": "754c51f6-790f-44dd-868c-c89a7d16e2f3", "title": "The Ocean's Call", "artist": "Suno AI.", "categorie": "Horizon Infini", "duration": 194 },
+            { "id": "a200b759-03e4-47c2-b724-6683187e0b3f", "title": "The Whispering Pines", "artist": "Suno AI", "categorie": "Quête Sauvage", "duration": 206 },
+            { "id": "d0def131-ec26-498a-9fd9-89952c2f060b", "title": "Tongue Twisters part two", "artist": "STEVE VAN GULICK-HILL", "categorie": "Esprit Aiguisé", "duration": 135 },
+            { "id": "997e0359-8457-4c24-9b6a-42ba76a7ee0d", "title": "Victory Unveiled", "artist": "GROOVEBOT.", "categorie": "Décollage Express", "duration": 180 },
+            { "id": "501f08e0-47b5-457c-b4ba-72b02fe033a2", "title": "Voyage Galactique", "artist": "JeanMiK2.", "categorie": "Horizon Infini", "duration": 240 },
+            { "id": "60035e3c-4024-4438-a0bf-85bea5b5fcd3", "title": "Well Well Well", "artist": "Vibe Music Ai Records.", "categorie": "Calme Puissant", "duration": 223 },
+            { "id": "11e0e768-b87b-4fae-b0b4-4e8dc6374e44", "title": "Where the Hell Am I?", "artist": "Vrthtbox.", "categorie": "Esprit Aiguisé", "duration": 228 },
+            { "id": "569c8380-bacf-4bd3-a35c-7d468c7b9602", "title": "Whispers of the Delta", "artist": "Sotoca AI.", "categorie": "Esprit Aiguisé", "duration": 70 },
+            { "id": "379a2b6a-d9fb-44f2-b3c3-9f608e223d04", "title": "You Need to Learn to Drive", "artist": "The Hulkster.", "categorie": "Esprit Aiguisé", "duration": 281 },
+            { "id": "65738b12-6995-4421-be9f-e3083e97ae2b", "title": "𝕀𝕟𝕤𝕥𝕣𝕦𝕞𝕖𝕟𝕥𝕒𝕝", "artist": "𝐑𝐞𝐧𝐡𝐚𝐋 🔞.", "categorie": "Esprit Aiguisé", "duration": 117 },
+            { "id": "e1917ac3-d715-457a-b17c-e21982141a53", "title": "🇷🇺Mellstroy Плаки плаки", "artist": "Wondarlove", "categorie": "Calme Puissant", "duration": 164 }
+        ];
+
+        // Variables globales
+        let currentTrackId = null;
+        let nextTrackTimer = null;
+        let radioHasStarted = false;
+        let isLoading = false;
+        let nextTrackPreload = null;
+        let napTimerInterval = null; // Déplacé ici pour être global au script
+        let napEndTime = null;      // Déplacé ici
+
+        // Éléments du DOM
+        const preloader = document.getElementById('preloader');
+        const playerContainer = document.getElementById('player-container');
+        const initialOverlay = document.getElementById('initial-play-overlay');
+        const startButton = document.getElementById('start-radio-button');
+        const iframeTarget = document.getElementById('iframe-target');
+        // nowPlayingText supprimé
+        const nextTrackButton = document.getElementById('next-track');
+        const loadingPlaceholder = document.getElementById('iframe-loading-placeholder');
+        // Éléments Nap Timer (seront définis dans initializeNapTimer)
+        let napButtonsContainer = null;
+        let timerDisplay = null;
+        let cancelNapButton = null;
+
+
+        // Fonction de préchargement
+        function preloadNextTrack() {
+            nextTrackPreload = selectRandomTrack();
+        }
+
+        // Fonctions Utilitaires Radio
+
+        /**
+         * Arrête la lecture de la radio en cours.
+         */
+         function stopRadioPlayback() {
+            const iframe = document.getElementById('suno-iframe');
+            console.log("Executing stopRadioPlayback()...");
+            if (iframe) {
+                iframe.remove();
+                console.log("Iframe removed.");
+            } else { console.log("No active iframe found to stop."); }
+
+            // Afficher placeholder
+            if (loadingPlaceholder) {
+                 if (!iframeTarget.contains(loadingPlaceholder)) { iframeTarget.innerHTML = ''; iframeTarget.appendChild(loadingPlaceholder); }
+                 loadingPlaceholder.style.display = 'flex';
+                 loadingPlaceholder.textContent = "Minuteur terminé. Radio arrêtée.";
+                 console.log("Loading placeholder displayed.");
+            } else { iframeTarget.innerHTML = '<p class="loading-message">Minuteur terminé. Radio arrêtée.</p>'; console.log("Loading placeholder recreated."); }
+
+            // Mettre à jour texte nowPlaying (supprimé)
+
+            // Arrêter timer suivant
+            if (nextTrackTimer) clearTimeout(nextTrackTimer);
+            nextTrackTimer = null;
+            console.log("Next track timer cleared.");
+
+            // Réinitialiser état radio
+            radioHasStarted = false;
+            currentTrackId = null;
+            nextTrackPreload = null;
+            isLoading = false;
+
+            // Afficher overlay initial
+            if (initialOverlay) { initialOverlay.classList.remove('hidden'); console.log("Initial overlay shown."); }
+            // Désactiver bouton next
+            if (nextTrackButton) { nextTrackButton.disabled = true; }
+
+            // NOTE: L'UI du Nap Timer est gérée séparément dans sa fonction de fin
+             console.log("stopRadioPlayback() finished.");
+        }
+
+
+        function getPlayHistory() {
+            try { /* ... */ return JSON.parse(localStorage.getItem('sunoRadioHistory')) || []; }
+            catch (e) { console.error("Err hist:", e); return []; }
+        }
+
+        function updatePlayHistory(trackId) { // Ne met plus à jour l'UI textuelle
+            if (!trackId) return;
+            let history = getPlayHistory();
+            const track = sunoTracks.find(t => t.id === trackId);
+            if (track) {
+                if (history.length === 0 || history[0].id !== trackId) {
+                    history.unshift({ id: trackId, title: track.title, artist: track.artist, timestamp: new Date().toISOString() });
+                    if (history.length > 15) history = history.slice(0, 15);
+                    try { localStorage.setItem('sunoRadioHistory', JSON.stringify(history)); }
+                    catch (e) { console.error("Err save hist:", e); }
+                }
+            }
+        }
+
+
+        function selectRandomTrack() {
+            const history = getPlayHistory();
+            let availableTracks = [...sunoTracks];
+            if (availableTracks.length === 0) return null;
+            const historyDepthToExclude = Math.min(5, availableTracks.length - 1);
+            const tracksToExclude = [];
+            if (currentTrackId) tracksToExclude.push(currentTrackId);
+            for (let i = 0; i < historyDepthToExclude && i < history.length; i++) { tracksToExclude.push(history[i].id); }
+            const uniqueExclusions = [...new Set(tracksToExclude)];
+            let filteredTracks = availableTracks.filter(track => !uniqueExclusions.includes(track.id));
+            if (filteredTracks.length === 0 && availableTracks.length > 0) {
+                 console.warn("Pool réduit, sélection étendue.");
+                 const lastPlayedId = history.length > 0 ? history[0].id : null;
+                 filteredTracks = availableTracks.filter(track => track.id !== currentTrackId && track.id !== lastPlayedId);
+                 if (filteredTracks.length === 0) filteredTracks = availableTracks;
+            } else if (filteredTracks.length === 0) { return null; }
+            return filteredTracks[Math.floor(Math.random() * filteredTracks.length)];
+        }
+
+
+        // Lance le timer pour la piste suivante (pas de mise à jour UI ici)
+        function updateProgress(track) {
+            if (track && track.duration && track.duration > 0) {
+                const durationMs = track.duration * 1000;
+                if (nextTrackTimer) clearTimeout(nextTrackTimer);
+                console.log(`Setting timer for next track in ${track.duration} seconds (ID: ${track.id}).`);
+                nextTrackTimer = setTimeout(() => {
+                    console.log(`Timer finished for track ${track.id}. Loading next.`);
+                    loadNextTrack();
+                }, durationMs);
+            } else {
+                if (nextTrackTimer) clearTimeout(nextTrackTimer);
+                nextTrackTimer = null;
+                console.warn(`Piste ${track ? track.id : 'inconnue'} sans durée valide, pas de passage auto.`);
+            }
+        }
+
+
+        // Chargement de la piste dans l'iframe
+        function loadTrack(track) {
+            if (!track || !track.id) { console.error("Piste invalide"); setTimeout(loadNextTrack, 3000); return; }
+            if (nextTrackTimer) clearTimeout(nextTrackTimer);
+            currentTrackId = track.id;
+            isLoading = true;
+            // nowPlayingText.textContent supprimé
+            iframeTarget.innerHTML = `<p class="loading-message" id="iframe-loading-placeholder">Chargement de "${track.title}"...</p>`;
+
+            const iframe = document.createElement('iframe');
+            iframe.id = 'suno-iframe';
+            iframe.src = `https://suno.com/embed/${track.id}?autoplay=true`;
+            iframe.title = `Lecteur Suno pour ${track.title}`;
+            iframe.allow = 'autoplay';
+            iframe.loading = 'eager';
+            iframe.sandbox = "allow-scripts allow-same-origin allow-presentation";
+            iframe.style.opacity = '0';
+
+            iframe.onload = () => {
+                console.log(`Iframe chargée: ${track.title} (ID: ${track.id})`);
+                isLoading = false;
+                const placeholder = document.getElementById('iframe-loading-placeholder');
+                if(placeholder) placeholder.remove();
+                iframe.style.opacity = '1';
+                updatePlayHistory(track.id); // Met à jour juste l'historique
+                updateProgress(track);       // Lance timer suivant
+                preloadNextTrack();
+            };
+            iframe.onerror = (e) => {
+                 console.error(`Erreur iframe: ${track.id}`, e);
+                 iframeTarget.innerHTML = `<p class="loading-message" id="iframe-loading-placeholder">Erreur chargement: "${track.title}". Suivant...</p>`;
+                // nowPlayingText.textContent supprimé
+                isLoading = false;
+                if (nextTrackTimer) clearTimeout(nextTrackTimer);
+                currentTrackId = null;
+                setTimeout(loadNextTrack, 5000);
+            };
+
+            const currentPlaceholder = document.getElementById('iframe-loading-placeholder');
+            if (currentPlaceholder) currentPlaceholder.remove();
+            iframeTarget.appendChild(iframe);
+        }
+
+
+        function loadNextTrack() {
+            if (isLoading || !radioHasStarted) { return; }
+            isLoading = true;
+            // nowPlayingText.textContent supprimé
+            iframeTarget.innerHTML = '<p class="loading-message" id="iframe-loading-placeholder">Chargement...</p>';
+            if (nextTrackTimer) clearTimeout(nextTrackTimer);
+            currentTrackId = null;
+            setTimeout(() => {
+                const trackToLoad = nextTrackPreload || selectRandomTrack();
+                nextTrackPreload = null;
+                if (trackToLoad) {
+                    loadTrack(trackToLoad);
+                } else {
+                    iframeTarget.innerHTML = '<p class="loading-message" id="iframe-loading-placeholder">Erreur : Aucun morceau.</p>';
+                    // nowPlayingText.textContent supprimé
+                    isLoading = false;
+                }
+            }, 150);
+        }
+
+
+        function startRadioFirstTime() {
+            if (radioHasStarted) return;
+            console.log("Démarrage de la radio...");
+             try { const audioContext = new (window.AudioContext || window.webkitAudioContext)(); if (audioContext.state === 'suspended') { audioContext.resume(); } } catch (e) { console.warn("AudioCtx fail:", e); }
+            radioHasStarted = true;
+            initialOverlay.classList.add('hidden');
+            if(nextTrackButton) nextTrackButton.disabled = false;
+            preloadNextTrack();
+            loadNextTrack();
+        }
+
+
+        // --- Fonctions Nap Timer ---
+
+        function formatTime(seconds) {
+            if (seconds < 0) seconds = 0;
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+             let timeString = '';
+             if (h > 0) timeString += `${h}h `;
+             if (m > 0 || h > 0) timeString += `${m.toString().padStart(h > 0 ? 2 : 1, '0')}m `;
+             timeString += `${s.toString().padStart(2, '0')}s`;
+            return timeString.trim();
+        }
+
+        function resetNapTimerUI() {
+             // Réinitialiser l'apparence des boutons de durée
+             const durationButtons = napButtonsContainer.querySelectorAll('.duration-button');
+             durationButtons.forEach(btn => btn.classList.remove('active'));
+             // Marquer "Illimité" comme actif par défaut
+             const unlimitedButton = napButtonsContainer.querySelector('.duration-button[data-duration="0"]');
+             if (unlimitedButton) unlimitedButton.classList.add('active');
+
+             // Cacher l'affichage du temps et le bouton annuler
+             if (timerDisplay) timerDisplay.classList.add('hidden');
+             if (cancelNapButton) cancelNapButton.classList.add('hidden');
+        }
+
+
+        function updateTimerDisplay() {
+            if (!napEndTime || !timerDisplay || !cancelNapButton) return; // Vérifier que les éléments existent
+
+            const now = Date.now();
+            const remainingSeconds = Math.round((napEndTime - now) / 1000);
+
+            if (remainingSeconds <= 0) {
+                console.log("Nap timer finished.");
+                clearInterval(napTimerInterval);
+                napTimerInterval = null;
+                napEndTime = null;
+
+                timerDisplay.textContent = "Fin de la sieste !";
+                timerDisplay.classList.remove('hidden');
+                cancelNapButton.classList.add('hidden'); // Cacher Annuler
+
+                // Appeler la fonction globale pour arrêter la radio
+                 if (typeof stopRadioPlayback === 'function') {
+                     stopRadioPlayback(); // Arrête la radio
+                 } else { console.error("stopRadioPlayback non trouvée !"); }
+
+                 resetNapTimerUI(); // Réinitialise aussi les boutons de durée
+
+                 // Cacher le message "Fin de la sieste" après un délai
+                 setTimeout(() => {
+                     if (!napTimerInterval) { // Vérifier si un nouveau timer n'a pas été lancé
+                        timerDisplay.classList.add('hidden');
+                     }
+                 }, 5000);
+
+            } else {
+                timerDisplay.textContent = `Temps restant : ${formatTime(remainingSeconds)}`;
+                timerDisplay.classList.remove('hidden'); // Assurer que c'est visible
+                cancelNapButton.classList.remove('hidden'); // Assurer que Annuler est visible
+            }
+        }
+
+        function startNapTimer(durationMinutes) {
+            if (napTimerInterval) clearInterval(napTimerInterval); // Annule timer précédent
+
+            if (durationMinutes > 0) {
+                const durationMillis = durationMinutes * 60 * 1000;
+                napEndTime = Date.now() + durationMillis;
+                console.log(`Nap timer started for ${durationMinutes} minutes.`);
+                updateTimerDisplay(); // Affichage initial
+                napTimerInterval = setInterval(updateTimerDisplay, 1000);
+
+                // Afficher Annuler, cacher autres boutons? Non, juste marquer actif
+                if (cancelNapButton) cancelNapButton.classList.remove('hidden');
+                 if (timerDisplay) timerDisplay.classList.remove('hidden');
+
+
+                // Démarrer la radio si besoin
+                if (!radioHasStarted && typeof startRadioFirstTime === 'function') {
+                     startRadioFirstTime();
+                }
+
+            } else { // Cas "Illimité" sélectionné
+                napEndTime = null;
+                console.log("Nap timer set to unlimited (stopped).");
+                resetNapTimerUI(); // Cache timer/cancel, met 'Illimité' en actif
+
+                 // Faut-il arrêter la radio si on clique sur "Illimité" ? Non, probablement pas.
+                 // Si la radio tournait, elle continue.
+            }
+        }
+
+        function cancelNapTimer() {
+            console.log("Nap timer cancelled by user.");
+            if (napTimerInterval) clearInterval(napTimerInterval);
+            napTimerInterval = null;
+            napEndTime = null;
+
+            if (timerDisplay) {
+                timerDisplay.textContent = "Minuteur annulé.";
+                timerDisplay.classList.remove('hidden');
+                setTimeout(() => { timerDisplay.classList.add('hidden'); }, 2000);
+            }
+            resetNapTimerUI(); // Cache Annuler, reset boutons durée
+        }
+
+
+        // Initialisation et Écouteurs d'événements
+        function initializeNapTimerUI() {
+             napButtonsContainer = document.getElementById('nap-buttons-container');
+             timerDisplay = document.getElementById('nap-timer-display');
+             cancelNapButton = document.getElementById('cancel-nap-timer');
+
+            if (!napButtonsContainer || !timerDisplay || !cancelNapButton) {
+                 console.error("Nap Timer: Éléments UI introuvables.");
+                 return;
+            }
+
+             // Listener pour les boutons de durée (délégation)
+             napButtonsContainer.addEventListener('click', (event) => {
+                 if (event.target.classList.contains('duration-button')) {
+                     const duration = parseInt(event.target.dataset.duration, 10);
+
+                     // Mettre à jour l'état actif visuel
+                     napButtonsContainer.querySelectorAll('.duration-button').forEach(btn => btn.classList.remove('active'));
+                     event.target.classList.add('active');
+
+                     startNapTimer(duration); // Démarre ou arrête le timer
+                 }
+             });
+
+             // Listener pour le bouton Annuler
+             cancelNapButton.addEventListener('click', cancelNapTimer);
+
+             // État initial (Illimité actif)
+             resetNapTimerUI();
+        }
+
+        function setupEventListeners() {
+             startButton.addEventListener('click', (event) => {
+                 event.stopPropagation();
+                 startRadioFirstTime();
+             });
+            nextTrackButton.addEventListener('click', () => {
+                if (isLoading) return;
+                if (!radioHasStarted) { startRadioFirstTime(); }
+                else { loadNextTrack(); }
+            });
+            window.addEventListener('offline', () => {
+                console.log("Offline");
+                if (nextTrackTimer) clearTimeout(nextTrackTimer);
+                const currentIframe = document.getElementById('suno-iframe');
+                if (currentIframe) {
+                     currentIframe.style.display = 'none';
+                     if (!document.getElementById('offline-placeholder')) {
+                         const offlineMsg = document.createElement('p');
+                         offlineMsg.className = 'loading-message';
+                         offlineMsg.id = 'offline-placeholder';
+                         offlineMsg.textContent = 'Connexion Internet perdue...';
+                         iframeTarget.appendChild(offlineMsg);
+                     }
+                } else if (loadingPlaceholder) { /* ... */ }
+                // nowPlayingText.textContent supprimé
+                if(nextTrackButton) nextTrackButton.disabled = true;
+            });
+            window.addEventListener('online', () => {
+                console.log("Online");
+                // nowPlayingText.textContent supprimé
+                if(nextTrackButton) nextTrackButton.disabled = false;
+                 const offlineMsg = document.getElementById('offline-placeholder');
+                 if (offlineMsg) offlineMsg.remove();
+                 const currentIframe = document.getElementById('suno-iframe');
+                 if (currentIframe) currentIframe.style.display = 'block';
+                if (radioHasStarted) { loadNextTrack(); }
+                else { /* ... nettoyage si pas démarré ... */ }
+            });
+        }
+
+        // Initialisation Générale
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Chargé. Initialisation...");
+            if (!sunoTracks || sunoTracks.length === 0) {
+                 console.error("Liste de morceaux vide !");
+                 const overlayContent = document.getElementById('initial-play-overlay');
+                 if(overlayContent) { overlayContent.innerHTML = '<p class="loading-message" style="color: red;">Erreur: Liste morceaux vide!</p>'; }
+                 else { document.body.innerHTML = '<p style="color: red; text-align: center; padding: 50px;">Erreur: Liste morceaux vide!</p>'; }
+                if (preloader) preloader.classList.add('hidden');
+                return;
+            }
+
+            initializeNapTimerUI(); // Initialise les éléments et listeners du nap timer
+            setupEventListeners(); // Attache les listeners généraux (play, next, online/offline)
+
+            if (preloader) preloader.classList.add('hidden');
+            console.log("Preloader caché.");
+            if(nextTrackButton) nextTrackButton.disabled = true; // Désactiver Next au départ
+        });
+
+        // --- END OF COMBINED JAVASCRIPT ---
+    </script>
+
+    <script>
+        // --- Service Worker Registration Script ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('SW registered: ', registration.scope);
+                }, err => {
+                    console.log('SW registration failed: ', err);
+                });
+            });
+        }
+        // --- End of Service Worker Registration Script ---
+    </script>
+
 </body>
 </html>
