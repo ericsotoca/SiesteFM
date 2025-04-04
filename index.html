@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sieste FM - La Radio qui vous endort en douceur.</title>
-    <!-- CSS et JS sont intégrés ci-dessous -->
     <link rel="preload" href="logo.png" as="image">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,6 +11,9 @@
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 
     <style>
+        /* --- AJOUT GOOGLE FONTS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Nunito:wght@400;700&display=swap');
+
         /* --- START OF COMBINED CSS --- */
         * {
             box-sizing: border-box;
@@ -25,23 +27,23 @@
             padding: 20px;
             max-width: 800px;
             margin: 0 auto;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Nunito', sans-serif; /* Police principale */
         }
 
         header {
             text-align: center;
             margin-bottom: 30px;
             padding: 20px 0;
-            width: 100%; /* Assure que le header prend toute la largeur du body */
+            width: 100%;
         }
 
         .logo {
-            height: auto; /* Important pour le ratio */
+            height: auto;
             display: block;
             margin-left: auto;
             margin-right: auto;
-            max-height: 150px; /* Limite hauteur sur grand écran */
-            max-width: 100%;   /* Permet de réduire si plus grand que conteneur */
+            max-height: 150px;
+            max-width: 100%;
         }
 
         .loading-message {
@@ -53,6 +55,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: 'Nunito', sans-serif; /* Assurez-vous que le message de chargement utilise Nunito */
         }
 
         .iframe-container {
@@ -90,6 +93,7 @@
             bottom: 10px;
             right: 10px;
             z-index: 10;
+            font-family: 'Nunito', sans-serif; /* Bouton suivant */
         }
 
         .button-next:hover {
@@ -102,29 +106,28 @@
             outline: 2px solid #5c67f2;
             outline-offset: 2px;
         }
+
         .button-next:disabled {
-             background-color: #4a54cc;
-             opacity: 0.6;
-             cursor: not-allowed;
-             transform: none;
-             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            background-color: #4a54cc;
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        /* --- STYLE POUR LE TEXTE INTRODUCTIF (AJOUTÉ) --- */
         .intro-support-text {
             text-align: center;
-            margin-bottom: 30px; /* Espace avant la section de soutien */
-            color: #ccc;        /* Couleur similaire à l'autre texte de soutien */
-            line-height: 1.6;    /* Un peu plus d'espace entre les lignes */
-            font-size: 0.95em;   /* Légèrement plus petit que le texte normal */
-            padding: 0 10px;     /* Un peu de padding horizontal pour ne pas coller aux bords sur mobile */
+            margin-bottom: 30px;
+            color: #ccc;
+            line-height: 1.7;
+            font-size: 0.95em;
+            padding: 0 10px;
+            font-family: 'Nunito', sans-serif; /* Texte introductif */
         }
-        /* --- FIN STYLE AJOUTÉ --- */
-
 
         .support-section {
             text-align: center;
-            margin: 40px 0; /* Garde sa marge supérieure pour espacer du texte ajouté */
+            margin: 40px 0;
             padding: 20px;
             background-color: rgba(92, 103, 242, 0.1);
             border-radius: 8px;
@@ -132,15 +135,20 @@
         }
 
         .support-title {
-            font-size: 1.5em;
-            color: #5c67f2;
-            margin-bottom: 15px;
+            font-family: 'Caveat', cursive; /* Titre de soutien */
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #707aff;
+            margin-bottom: 20px;
+            line-height: 1.2;
         }
 
         .support-text {
             margin-bottom: 20px;
-            line-height: 1.5;
+            line-height: 1.6;
             color: #ccc;
+            font-size: 1em;
+            font-family: 'Nunito', sans-serif; /* Texte de soutien */
         }
 
         .support-buttons {
@@ -159,27 +167,29 @@
             text-decoration: none;
             font-weight: bold;
             transition: all 0.3s ease;
+            font-family: 'Nunito', sans-serif; /* Boutons de soutien */
         }
+
         .support-button.paypal-button {
             background-color: #0070ba;
         }
+
         .support-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         .support-button.paypal-button:hover {
-             box-shadow: 0 4px 8px rgba(0, 112, 186, 0.4);
+            box-shadow: 0 4px 8px rgba(0, 112, 186, 0.4);
         }
+
         .support-button:not(.paypal-button):hover {
-             box-shadow: 0 4px 8px rgba(242, 140, 49, 0.4);
+            box-shadow: 0 4px 8px rgba(242, 140, 49, 0.4);
         }
 
-        /* --- Styles pour #now-playing (caché) --- */
         #now-playing {
-            display: none; /* CACHE COMPLETEMENT L'ELEMENT */
+            display: none;
         }
-        /* Les règles pour #now-playing-text sont inutiles car le parent est caché */
-
 
         /* --- START OF nap-timer CSS --- */
         #nap-duration-selector-area {
@@ -190,62 +200,64 @@
             border-radius: 8px;
         }
 
-        #nap-buttons-container { /* Nouveau conteneur pour les boutons de durée */
+        #nap-buttons-container {
             display: flex;
             justify-content: center;
-            gap: 10px; /* Espace entre les boutons */
-            flex-wrap: wrap; /* Passage à la ligne sur petits écrans */
-            margin-bottom: 10px; /* Espace avant affichage timer/cancel */
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
         }
 
-        .duration-button { /* Style commun pour les boutons de durée */
+        .duration-button {
             padding: 8px 15px;
-            border: 1px solid #5c67f2; /* Bordure pour indiquer sélectionnable */
-            border-radius: 20px; /* Bordures arrondies */
-            background-color: transparent; /* Fond transparent par défaut */
-            color: #c5c5c5; /* Couleur texte gris clair */
+            border: 1px solid #5c67f2;
+            border-radius: 20px;
+            background-color: transparent;
+            color: #c5c5c5;
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
             font-size: 0.9em;
+            font-family: 'Nunito', sans-serif; /* Boutons de durée */
         }
 
         .duration-button:hover {
-            background-color: rgba(92, 103, 242, 0.2); /* Léger fond au survol */
+            background-color: rgba(92, 103, 242, 0.2);
             color: #ffffff;
         }
 
-        .duration-button.active { /* Style pour le bouton ACTIF */
-            background-color: #5c67f2; /* Fond plein */
-            color: white; /* Texte blanc */
-            border-color: #5c67f2; /* Bordure de la même couleur */
-        }
-        /* On désactive le hover quand un bouton est actif pour éviter confusion */
-        .duration-button.active:hover {
-             background-color: #5c67f2;
-             color: white;
+        .duration-button.active {
+            background-color: #5c67f2;
+            color: white;
+            border-color: #5c67f2;
         }
 
-        #cancel-nap-timer { /* Style spécifique pour Annuler */
+        .duration-button.active:hover {
+            background-color: #5c67f2;
+            color: white;
+        }
+
+        #cancel-nap-timer {
             padding: 8px 15px;
             border: none;
             border-radius: 5px;
-            background-color: #f44336; /* Rouge pour annuler */
+            background-color: #f44336;
             color: white;
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s ease;
-            margin-left: 10px; /* Espace si à côté du timer */
-             vertical-align: middle;
+            margin-left: 10px;
+            vertical-align: middle;
+            font-family: 'Nunito', sans-serif; /* Bouton annuler minuteur */
         }
 
         #cancel-nap-timer:hover {
-            background-color: #d32f2f; /* Rouge plus foncé */
+            background-color: #d32f2f;
         }
 
         #cancel-nap-timer.hidden {
-             display: none;
-         }
+            display: none;
+        }
 
         #nap-timer-display {
             margin-top: 10px;
@@ -253,8 +265,8 @@
             font-weight: bold;
             color: #a5f3fc;
             min-height: 1.2em;
-             display: inline-block; /* Pour s'aligner avec cancel */
-             vertical-align: middle;
+            display: inline-block;
+            vertical-align: middle;
         }
 
         #nap-timer-display.hidden {
@@ -263,7 +275,7 @@
         /* --- END OF nap-timer CSS --- */
 
         /* --- START OF Overlay styles --- */
-         #initial-play-overlay {
+        #initial-play-overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -282,68 +294,130 @@
             visibility: visible;
             opacity: 1;
         }
-        #initial-play-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        #start-radio-button { background-color: #5c67f2; color: white; padding: 15px 30px; border: none; border-radius: 30px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.3s ease; margin-top: 15px; }
-        #start-radio-button:hover { background-color: #4a54cc; transform: scale(1.05); }
-        #start-radio-button:focus { outline: 2px solid #5c67f2; outline-offset: 2px; }
-        .overlay-icon { font-size: 3em; color: #5c67f2; margin-bottom: 10px; animation: pulse 2s infinite ease-in-out; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        .overlay-text { font-size: 0.9em; color: #ccc; margin-top: 15px; }
+
+        #initial-play-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #start-radio-button {
+            background-color: #5c67f2;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            font-family: 'Nunito', sans-serif; /* Bouton démarrer radio */
+        }
+
+        #start-radio-button:hover {
+            background-color: #4a54cc;
+            transform: scale(1.05);
+        }
+
+        #start-radio-button:focus {
+            outline: 2px solid #5c67f2;
+            outline-offset: 2px;
+        }
+
+        .overlay-icon {
+            font-size: 3em;
+            color: #5c67f2;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .overlay-text {
+            font-size: 0.9em;
+            color: #ccc;
+            margin-top: 15px;
+            font-family: 'Nunito', sans-serif; /* Texte de l'overlay */
+        }
         /* --- END OF Overlay styles --- */
 
         /* --- START OF Preloader styles --- */
-        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0D1B2A; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; opacity: 1; transition: opacity 0.5s ease-out, visibility 0.5s ease-out; visibility: visible; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #5c67f2; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        #preloader p { color: #aaa; }
-        #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0D1B2A;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+            visibility: visible;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #5c67f2;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        #preloader p {
+            color: #aaa;
+            font-family: 'Nunito', sans-serif; /* Texte du préchargeur */
+        }
+
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         /* --- END OF Preloader styles --- */
 
         /* --- START OF Responsive styles --- */
         @media (max-width: 600px) {
             body { padding: 10px; }
-            header { padding: 15px 0; margin-bottom: 20px; border-bottom: none; }
-
-            .logo {
-                width: 100%;       /* Force la largeur à 100% du conteneur (header) */
-                max-width: 100%;   /* Assure qu'il ne dépasse pas (redondant mais sûr) */
-                height: auto;      /* Ajuste la hauteur automatiquement pour garder les proportions */
-                max-height: none;  /* Supprime la limite de hauteur max spécifique au mobile */
-                margin-left: 0;    /* Plus besoin de centrer horizontalement avec auto */
-                margin-right: 0;
-            }
-
+            header { padding: 15px 0; margin-bottom: 20px; }
+            .logo { width: 100%; max-width: 100%; height: auto; max-height: none; margin-left: 0; margin-right: 0; }
             #start-radio-button { padding: 12px 24px; font-size: 1em; }
             .overlay-icon { font-size: 2.5em; }
             .button-next { padding: 8px 16px; font-size: 0.8em; bottom: 8px; right: 8px; }
-
-            /* Ajustement responsive pour le texte introductif (AJOUTÉ) */
-            .intro-support-text {
-                margin-bottom: 20px; /* Moins d'espace sur mobile */
-                font-size: 0.9em;    /* Taille adaptée au mobile */
-            }
-
-            .support-section { padding: 15px; margin: 25px 0; } /* Margin top réduite pour mobile */
+            .intro-support-text { margin-bottom: 20px; font-size: 0.9em; }
+            .support-section { padding: 15px; margin: 25px 0; }
+            .support-title { font-size: 1.9em; margin-bottom: 15px; }
             .support-buttons { gap: 10px; }
             .support-button { padding: 8px 16px; font-size: 0.9em; }
-            /* #now-playing responsive styles removed */
             .iframe-container { margin-bottom: 10px; }
-
-            /* Ajustements Nap Timer pour mobile */
             #nap-duration-selector-area { padding: 10px; margin-bottom: 15px; }
-            #nap-buttons-container { gap: 8px; } /* Moins d'espace entre boutons */
+            #nap-buttons-container { gap: 8px; }
             .duration-button { padding: 6px 12px; font-size: 0.85em; }
             #cancel-nap-timer { padding: 6px 12px; font-size: 0.85em; }
             #nap-timer-display { font-size: 1em; margin-top: 8px; }
         }
         /* --- END OF Responsive styles --- */
-
     </style>
 </head>
 <body>
     <div id="preloader">
         <div class="spinner"></div>
-        <p>Chargement de Sieste FM...</p>
+        <p>Chargement de Sieste FM...</p> <!-- Hérite Nunito -->
     </div>
 
     <header>
@@ -356,9 +430,9 @@
             <button class="duration-button" data-duration="10">10 min</button>
             <button class="duration-button" data-duration="15">15 min</button>
             <button class="duration-button" data-duration="30">30 min</button>
-            <button class="duration-button active" data-duration="0">Illimité</button> <!-- Actif par défaut -->
+            <button class="duration-button active" data-duration="0">Illimité</button>
         </div>
-        <div> <!-- Conteneur pour affichage timer et bouton annuler -->
+        <div>
             <div id="nap-timer-display" class="hidden"></div>
             <button id="cancel-nap-timer" class="hidden">Annuler Minuteur</button>
         </div>
@@ -370,29 +444,29 @@
             <button id="start-radio-button">Lancer Sieste FM</button>
         </div>
         <div id="iframe-target">
-            <div class="loading-message" id="iframe-loading-placeholder">Chargement du lecteur...</div>
+            <div class="loading-message" id="iframe-loading-placeholder">Chargement du lecteur...</div> <!-- Style italic, mais police Nunito -->
         </div>
-         <button id="next-track" class="button-next">Morceau Suivant ⏭️</button>
+        <button id="next-track" class="button-next">Morceau Suivant ⏭️</button>
     </div>
 
     <!-- DIV #now-playing EST MAINTENANT CACHÉE PAR CSS -->
     <div id="now-playing">
-        <p id="now-playing-text"></p>
+        <p id="now-playing-text"></p> <!-- Hériterait Nunito si visible -->
     </div>
 
-    <!-- --- PARAGRAPHE INTRODUCTIF AJOUTÉ ICI --- -->
+    <!-- --- PARAGRAPHE INTRODUCTIF --- -->
     <p class="intro-support-text">
-        Nos ondes sont sans pub, comme votre sieste devrait l'être : paisible et ininterrompue ! Chez Sieste FM, nous croyons que la musique et les ronronnements sont un droit fondamental. Votre soutien transforme chaque note en un petit moment de bonheur partagé... et notre chat mascotte vous en remercie !
+        "Nos ondes sont sans pub, comme votre sieste devrait l'être : paisible et ininterrompue ! Chez Sieste FM, nous croyons que la musique et les ronronnements sont un droit fondamental. Votre soutien transforme chaque note en un petit moment de bonheur partagé... et notre chat mascotte vous en remercie !"
     </p>
-    <!-- --- FIN DU PARAGRAPHE AJOUTÉ --- -->
 
     <div class="support-section">
-         <h2 class="support-title">SOUTENIR Sieste FM</h2>
-         <p class="support-text">Merci</p>
-         <div class="support-buttons">
-             <a href="https://www.paypal.com/donate/?hosted_button_id=S8GPJPJYS79WS" target="_blank" class="support-button paypal-button">Faire un don via PayPal</a>
-             <a href="https://fr.tipeee.com/SiesteFM/" target="_blank" class="support-button">Nous soutenir sur Tipeee</a>
-         </div>
+        <h2 class="support-title">SOUTENIR Sieste FM</h2> <!-- Police Caveat -->
+
+        <div class="support-buttons">
+            <a href="https://www.paypal.com/donate/?hosted_button_id=S8GPJPJYS79WS" target="_blank" class="support-button paypal-button">Faire un don via PayPal</a> <!-- Police Nunito -->
+            <a href="https://fr.tipeee.com/SiesteFM/" target="_blank" class="support-button">Nous soutenir sur Tipeee</a> <!-- Police Nunito -->
+        </div>
+        <p class="support-title"><BR>Merci</p> <!-- Police Nunito -->
     </div>
 
     <script>
@@ -430,8 +504,8 @@
         let radioHasStarted = false;
         let isLoading = false;
         let nextTrackPreload = null;
-        let napTimerInterval = null; // Déplacé ici pour être global au script
-        let napEndTime = null;      // Déplacé ici
+        let napTimerInterval = null;
+        let napEndTime = null;
 
         // Éléments du DOM
         const preloader = document.getElementById('preloader');
@@ -439,70 +513,40 @@
         const initialOverlay = document.getElementById('initial-play-overlay');
         const startButton = document.getElementById('start-radio-button');
         const iframeTarget = document.getElementById('iframe-target');
-        // nowPlayingText supprimé
         const nextTrackButton = document.getElementById('next-track');
         const loadingPlaceholder = document.getElementById('iframe-loading-placeholder');
-        // Éléments Nap Timer (seront définis dans initializeNapTimer)
         let napButtonsContainer = null;
         let timerDisplay = null;
         let cancelNapButton = null;
 
-
-        // Fonction de préchargement
         function preloadNextTrack() {
             nextTrackPreload = selectRandomTrack();
         }
 
-        // Fonctions Utilitaires Radio
-
-        /**
-         * Arrête la lecture de la radio en cours.
-         */
-         function stopRadioPlayback() {
+        function stopRadioPlayback() {
             const iframe = document.getElementById('suno-iframe');
-            console.log("Executing stopRadioPlayback()...");
-            if (iframe) {
-                iframe.remove();
-                console.log("Iframe removed.");
-            } else { console.log("No active iframe found to stop."); }
-
-            // Afficher placeholder
+            if (iframe) { iframe.remove(); }
             if (loadingPlaceholder) {
-                 if (!iframeTarget.contains(loadingPlaceholder)) { iframeTarget.innerHTML = ''; iframeTarget.appendChild(loadingPlaceholder); }
-                 loadingPlaceholder.style.display = 'flex';
-                 loadingPlaceholder.textContent = "Minuteur terminé. Radio arrêtée.";
-                 console.log("Loading placeholder displayed.");
-            } else { iframeTarget.innerHTML = '<p class="loading-message">Minuteur terminé. Radio arrêtée.</p>'; console.log("Loading placeholder recreated."); }
-
-            // Mettre à jour texte nowPlaying (supprimé)
-
-            // Arrêter timer suivant
+                if (!iframeTarget.contains(loadingPlaceholder)) { iframeTarget.innerHTML = ''; iframeTarget.appendChild(loadingPlaceholder); }
+                loadingPlaceholder.style.display = 'flex';
+                loadingPlaceholder.textContent = "Minuteur terminé. Radio arrêtée.";
+            } else { iframeTarget.innerHTML = '<p class="loading-message">Minuteur terminé. Radio arrêtée.</p>'; }
             if (nextTrackTimer) clearTimeout(nextTrackTimer);
             nextTrackTimer = null;
-            console.log("Next track timer cleared.");
-
-            // Réinitialiser état radio
             radioHasStarted = false;
             currentTrackId = null;
             nextTrackPreload = null;
             isLoading = false;
-
-            // Afficher overlay initial
-            if (initialOverlay) { initialOverlay.classList.remove('hidden'); console.log("Initial overlay shown."); }
-            // Désactiver bouton next
+            if (initialOverlay) { initialOverlay.classList.remove('hidden'); }
             if (nextTrackButton) { nextTrackButton.disabled = true; }
-
-            // NOTE: L'UI du Nap Timer est gérée séparément dans sa fonction de fin
-             console.log("stopRadioPlayback() finished.");
         }
 
-
         function getPlayHistory() {
-            try { /* ... */ return JSON.parse(localStorage.getItem('sunoRadioHistory')) || []; }
+            try { return JSON.parse(localStorage.getItem('sunoRadioHistory')) || []; }
             catch (e) { console.error("Err hist:", e); return []; }
         }
 
-        function updatePlayHistory(trackId) { // Ne met plus à jour l'UI textuelle
+        function updatePlayHistory(trackId) {
             if (!trackId) return;
             let history = getPlayHistory();
             const track = sunoTracks.find(t => t.id === trackId);
@@ -516,7 +560,6 @@
             }
         }
 
-
         function selectRandomTrack() {
             const history = getPlayHistory();
             let availableTracks = [...sunoTracks];
@@ -528,40 +571,29 @@
             const uniqueExclusions = [...new Set(tracksToExclude)];
             let filteredTracks = availableTracks.filter(track => !uniqueExclusions.includes(track.id));
             if (filteredTracks.length === 0 && availableTracks.length > 0) {
-                 console.warn("Pool réduit, sélection étendue.");
-                 const lastPlayedId = history.length > 0 ? history[0].id : null;
-                 filteredTracks = availableTracks.filter(track => track.id !== currentTrackId && track.id !== lastPlayedId);
-                 if (filteredTracks.length === 0) filteredTracks = availableTracks;
+                const lastPlayedId = history.length > 0 ? history[0].id : null;
+                filteredTracks = availableTracks.filter(track => track.id !== currentTrackId && track.id !== lastPlayedId);
+                if (filteredTracks.length === 0) filteredTracks = availableTracks;
             } else if (filteredTracks.length === 0) { return null; }
             return filteredTracks[Math.floor(Math.random() * filteredTracks.length)];
         }
 
-
-        // Lance le timer pour la piste suivante (pas de mise à jour UI ici)
         function updateProgress(track) {
             if (track && track.duration && track.duration > 0) {
                 const durationMs = track.duration * 1000;
                 if (nextTrackTimer) clearTimeout(nextTrackTimer);
-                console.log(`Setting timer for next track in ${track.duration} seconds (ID: ${track.id}).`);
-                nextTrackTimer = setTimeout(() => {
-                    console.log(`Timer finished for track ${track.id}. Loading next.`);
-                    loadNextTrack();
-                }, durationMs);
+                nextTrackTimer = setTimeout(() => { loadNextTrack(); }, durationMs);
             } else {
                 if (nextTrackTimer) clearTimeout(nextTrackTimer);
                 nextTrackTimer = null;
-                console.warn(`Piste ${track ? track.id : 'inconnue'} sans durée valide, pas de passage auto.`);
             }
         }
 
-
-        // Chargement de la piste dans l'iframe
         function loadTrack(track) {
-            if (!track || !track.id) { console.error("Piste invalide"); setTimeout(loadNextTrack, 3000); return; }
+            if (!track || !track.id) { setTimeout(loadNextTrack, 3000); return; }
             if (nextTrackTimer) clearTimeout(nextTrackTimer);
             currentTrackId = track.id;
             isLoading = true;
-            // nowPlayingText.textContent supprimé
             iframeTarget.innerHTML = `<p class="loading-message" id="iframe-loading-placeholder">Chargement de "${track.title}"...</p>`;
 
             const iframe = document.createElement('iframe');
@@ -574,19 +606,16 @@
             iframe.style.opacity = '0';
 
             iframe.onload = () => {
-                console.log(`Iframe chargée: ${track.title} (ID: ${track.id})`);
                 isLoading = false;
                 const placeholder = document.getElementById('iframe-loading-placeholder');
                 if(placeholder) placeholder.remove();
                 iframe.style.opacity = '1';
-                updatePlayHistory(track.id); // Met à jour juste l'historique
-                updateProgress(track);       // Lance timer suivant
+                updatePlayHistory(track.id);
+                updateProgress(track);
                 preloadNextTrack();
             };
             iframe.onerror = (e) => {
-                 console.error(`Erreur iframe: ${track.id}`, e);
-                 iframeTarget.innerHTML = `<p class="loading-message" id="iframe-loading-placeholder">Erreur chargement: "${track.title}". Suivant...</p>`;
-                // nowPlayingText.textContent supprimé
+                iframeTarget.innerHTML = `<p class="loading-message" id="iframe-loading-placeholder">Erreur chargement: "${track.title}". Suivant...</p>`;
                 isLoading = false;
                 if (nextTrackTimer) clearTimeout(nextTrackTimer);
                 currentTrackId = null;
@@ -598,11 +627,9 @@
             iframeTarget.appendChild(iframe);
         }
 
-
         function loadNextTrack() {
             if (isLoading || !radioHasStarted) { return; }
             isLoading = true;
-            // nowPlayingText.textContent supprimé
             iframeTarget.innerHTML = '<p class="loading-message" id="iframe-loading-placeholder">Chargement...</p>';
             if (nextTrackTimer) clearTimeout(nextTrackTimer);
             currentTrackId = null;
@@ -613,17 +640,14 @@
                     loadTrack(trackToLoad);
                 } else {
                     iframeTarget.innerHTML = '<p class="loading-message" id="iframe-loading-placeholder">Erreur : Aucun morceau.</p>';
-                    // nowPlayingText.textContent supprimé
                     isLoading = false;
                 }
             }, 150);
         }
 
-
         function startRadioFirstTime() {
             if (radioHasStarted) return;
-            console.log("Démarrage de la radio...");
-             try { const audioContext = new (window.AudioContext || window.webkitAudioContext)(); if (audioContext.state === 'suspended') { audioContext.resume(); } } catch (e) { console.warn("AudioCtx fail:", e); }
+            try { const audioContext = new (window.AudioContext || window.webkitAudioContext)(); if (audioContext.state === 'suspended') { audioContext.resume(); } } catch (e) { console.warn("AudioCtx fail:", e); }
             radioHasStarted = true;
             initialOverlay.classList.add('hidden');
             if(nextTrackButton) nextTrackButton.disabled = false;
@@ -631,206 +655,129 @@
             loadNextTrack();
         }
 
-
-        // --- Fonctions Nap Timer ---
-
         function formatTime(seconds) {
             if (seconds < 0) seconds = 0;
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
             const s = Math.floor(seconds % 60);
-             let timeString = '';
-             if (h > 0) timeString += `${h}h `;
-             if (m > 0 || h > 0) timeString += `${m.toString().padStart(h > 0 ? 2 : 1, '0')}m `;
-             timeString += `${s.toString().padStart(2, '0')}s`;
+            let timeString = '';
+            if (h > 0) timeString += `${h}h `;
+            if (m > 0 || h > 0) timeString += `${m.toString().padStart(h > 0 ? 2 : 1, '0')}m `;
+            timeString += `${s.toString().padStart(2, '0')}s`;
             return timeString.trim();
         }
 
         function resetNapTimerUI() {
-             // Réinitialiser l'apparence des boutons de durée
-             const durationButtons = napButtonsContainer.querySelectorAll('.duration-button');
-             durationButtons.forEach(btn => btn.classList.remove('active'));
-             // Marquer "Illimité" comme actif par défaut
-             const unlimitedButton = napButtonsContainer.querySelector('.duration-button[data-duration="0"]');
-             if (unlimitedButton) unlimitedButton.classList.add('active');
-
-             // Cacher l'affichage du temps et le bouton annuler
-             if (timerDisplay) timerDisplay.classList.add('hidden');
-             if (cancelNapButton) cancelNapButton.classList.add('hidden');
+            const durationButtons = napButtonsContainer.querySelectorAll('.duration-button');
+            durationButtons.forEach(btn => btn.classList.remove('active'));
+            const unlimitedButton = napButtonsContainer.querySelector('.duration-button[data-duration="0"]');
+            if (unlimitedButton) unlimitedButton.classList.add('active');
+            if (timerDisplay) timerDisplay.classList.add('hidden');
+            if (cancelNapButton) cancelNapButton.classList.add('hidden');
         }
 
-
         function updateTimerDisplay() {
-            if (!napEndTime || !timerDisplay || !cancelNapButton) return; // Vérifier que les éléments existent
-
+            if (!napEndTime || !timerDisplay || !cancelNapButton) return;
             const now = Date.now();
             const remainingSeconds = Math.round((napEndTime - now) / 1000);
-
             if (remainingSeconds <= 0) {
-                console.log("Nap timer finished.");
                 clearInterval(napTimerInterval);
                 napTimerInterval = null;
                 napEndTime = null;
-
                 timerDisplay.textContent = "Fin de la sieste !";
                 timerDisplay.classList.remove('hidden');
-                cancelNapButton.classList.add('hidden'); // Cacher Annuler
-
-                // Appeler la fonction globale pour arrêter la radio
-                 if (typeof stopRadioPlayback === 'function') {
-                     stopRadioPlayback(); // Arrête la radio
-                 } else { console.error("stopRadioPlayback non trouvée !"); }
-
-                 resetNapTimerUI(); // Réinitialise aussi les boutons de durée
-
-                 // Cacher le message "Fin de la sieste" après un délai
-                 setTimeout(() => {
-                     if (!napTimerInterval) { // Vérifier si un nouveau timer n'a pas été lancé
-                        timerDisplay.classList.add('hidden');
-                     }
-                 }, 5000);
-
+                cancelNapButton.classList.add('hidden');
+                if (typeof stopRadioPlayback === 'function') { stopRadioPlayback(); }
+                resetNapTimerUI();
+                setTimeout(() => {
+                    if (!napTimerInterval) { timerDisplay.classList.add('hidden'); }
+                }, 5000);
             } else {
                 timerDisplay.textContent = `Temps restant : ${formatTime(remainingSeconds)}`;
-                timerDisplay.classList.remove('hidden'); // Assurer que c'est visible
-                cancelNapButton.classList.remove('hidden'); // Assurer que Annuler est visible
+                timerDisplay.classList.remove('hidden');
+                cancelNapButton.classList.remove('hidden');
             }
         }
 
         function startNapTimer(durationMinutes) {
-            if (napTimerInterval) clearInterval(napTimerInterval); // Annule timer précédent
-
+            if (napTimerInterval) clearInterval(napTimerInterval);
             if (durationMinutes > 0) {
                 const durationMillis = durationMinutes * 60 * 1000;
                 napEndTime = Date.now() + durationMillis;
-                console.log(`Nap timer started for ${durationMinutes} minutes.`);
-                updateTimerDisplay(); // Affichage initial
+                updateTimerDisplay();
                 napTimerInterval = setInterval(updateTimerDisplay, 1000);
-
-                // Afficher Annuler, cacher autres boutons? Non, juste marquer actif
                 if (cancelNapButton) cancelNapButton.classList.remove('hidden');
-                 if (timerDisplay) timerDisplay.classList.remove('hidden');
-
-
-                // Démarrer la radio si besoin
-                if (!radioHasStarted && typeof startRadioFirstTime === 'function') {
-                     startRadioFirstTime();
-                }
-
-            } else { // Cas "Illimité" sélectionné
+                if (timerDisplay) timerDisplay.classList.remove('hidden');
+                if (!radioHasStarted && typeof startRadioFirstTime === 'function') { startRadioFirstTime(); }
+            } else {
                 napEndTime = null;
-                console.log("Nap timer set to unlimited (stopped).");
-                resetNapTimerUI(); // Cache timer/cancel, met 'Illimité' en actif
-
-                 // Faut-il arrêter la radio si on clique sur "Illimité" ? Non, probablement pas.
-                 // Si la radio tournait, elle continue.
+                resetNapTimerUI();
             }
         }
 
         function cancelNapTimer() {
-            console.log("Nap timer cancelled by user.");
             if (napTimerInterval) clearInterval(napTimerInterval);
             napTimerInterval = null;
             napEndTime = null;
-
             if (timerDisplay) {
                 timerDisplay.textContent = "Minuteur annulé.";
                 timerDisplay.classList.remove('hidden');
                 setTimeout(() => { timerDisplay.classList.add('hidden'); }, 2000);
             }
-            resetNapTimerUI(); // Cache Annuler, reset boutons durée
+            resetNapTimerUI();
         }
 
-
-        // Initialisation et Écouteurs d'événements
         function initializeNapTimerUI() {
-             napButtonsContainer = document.getElementById('nap-buttons-container');
-             timerDisplay = document.getElementById('nap-timer-display');
-             cancelNapButton = document.getElementById('cancel-nap-timer');
-
-            if (!napButtonsContainer || !timerDisplay || !cancelNapButton) {
-                 console.error("Nap Timer: Éléments UI introuvables.");
-                 return;
-            }
-
-             // Listener pour les boutons de durée (délégation)
-             napButtonsContainer.addEventListener('click', (event) => {
-                 if (event.target.classList.contains('duration-button')) {
-                     const duration = parseInt(event.target.dataset.duration, 10);
-
-                     // Mettre à jour l'état actif visuel
-                     napButtonsContainer.querySelectorAll('.duration-button').forEach(btn => btn.classList.remove('active'));
-                     event.target.classList.add('active');
-
-                     startNapTimer(duration); // Démarre ou arrête le timer
-                 }
-             });
-
-             // Listener pour le bouton Annuler
-             cancelNapButton.addEventListener('click', cancelNapTimer);
-
-             // État initial (Illimité actif)
-             resetNapTimerUI();
+            napButtonsContainer = document.getElementById('nap-buttons-container');
+            timerDisplay = document.getElementById('nap-timer-display');
+            cancelNapButton = document.getElementById('cancel-nap-timer');
+            if (!napButtonsContainer || !timerDisplay || !cancelNapButton) { return; }
+            napButtonsContainer.addEventListener('click', (event) => {
+                if (event.target.classList.contains('duration-button')) {
+                    const duration = parseInt(event.target.dataset.duration, 10);
+                    napButtonsContainer.querySelectorAll('.duration-button').forEach(btn => btn.classList.remove('active'));
+                    event.target.classList.add('active');
+                    startNapTimer(duration);
+                }
+            });
+            cancelNapButton.addEventListener('click', cancelNapTimer);
+            resetNapTimerUI();
         }
 
         function setupEventListeners() {
-             startButton.addEventListener('click', (event) => {
-                 event.stopPropagation();
-                 startRadioFirstTime();
-             });
-            nextTrackButton.addEventListener('click', () => {
-                if (isLoading) return;
-                if (!radioHasStarted) { startRadioFirstTime(); }
-                else { loadNextTrack(); }
-            });
+            startButton.addEventListener('click', (event) => { event.stopPropagation(); startRadioFirstTime(); });
+            nextTrackButton.addEventListener('click', () => { if (isLoading) return; if (!radioHasStarted) { startRadioFirstTime(); } else { loadNextTrack(); } });
             window.addEventListener('offline', () => {
-                console.log("Offline");
                 if (nextTrackTimer) clearTimeout(nextTrackTimer);
                 const currentIframe = document.getElementById('suno-iframe');
                 if (currentIframe) {
-                     currentIframe.style.display = 'none';
-                     if (!document.getElementById('offline-placeholder')) {
-                         const offlineMsg = document.createElement('p');
-                         offlineMsg.className = 'loading-message';
-                         offlineMsg.id = 'offline-placeholder';
-                         offlineMsg.textContent = 'Connexion Internet perdue...';
-                         iframeTarget.appendChild(offlineMsg);
-                     }
-                } else if (loadingPlaceholder) { /* ... */ }
-                // nowPlayingText.textContent supprimé
+                    currentIframe.style.display = 'none';
+                    if (!document.getElementById('offline-placeholder')) { /* Add offline message */ }
+                }
                 if(nextTrackButton) nextTrackButton.disabled = true;
             });
             window.addEventListener('online', () => {
-                console.log("Online");
-                // nowPlayingText.textContent supprimé
                 if(nextTrackButton) nextTrackButton.disabled = false;
-                 const offlineMsg = document.getElementById('offline-placeholder');
-                 if (offlineMsg) offlineMsg.remove();
-                 const currentIframe = document.getElementById('suno-iframe');
-                 if (currentIframe) currentIframe.style.display = 'block';
+                const offlineMsg = document.getElementById('offline-placeholder');
+                if (offlineMsg) offlineMsg.remove();
+                const currentIframe = document.getElementById('suno-iframe');
+                if (currentIframe) currentIframe.style.display = 'block';
                 if (radioHasStarted) { loadNextTrack(); }
-                else { /* ... nettoyage si pas démarré ... */ }
             });
         }
 
-        // Initialisation Générale
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM Chargé. Initialisation...");
             if (!sunoTracks || sunoTracks.length === 0) {
-                 console.error("Liste de morceaux vide !");
-                 const overlayContent = document.getElementById('initial-play-overlay');
-                 if(overlayContent) { overlayContent.innerHTML = '<p class="loading-message" style="color: red;">Erreur: Liste morceaux vide!</p>'; }
-                 else { document.body.innerHTML = '<p style="color: red; text-align: center; padding: 50px;">Erreur: Liste morceaux vide!</p>'; }
+                const overlayContent = document.getElementById('initial-play-overlay');
+                if(overlayContent) { overlayContent.innerHTML = '<p class="loading-message" style="color: red;">Erreur: Liste morceaux vide!</p>'; }
+                else { document.body.innerHTML = '<p style="color: red; text-align: center; padding: 50px;">Erreur: Liste morceaux vide!</p>'; }
                 if (preloader) preloader.classList.add('hidden');
                 return;
             }
-
-            initializeNapTimerUI(); // Initialise les éléments et listeners du nap timer
-            setupEventListeners(); // Attache les listeners généraux (play, next, online/offline)
-
+            initializeNapTimerUI();
+            setupEventListeners();
             if (preloader) preloader.classList.add('hidden');
-            console.log("Preloader caché.");
-            if(nextTrackButton) nextTrackButton.disabled = true; // Désactiver Next au départ
+            if(nextTrackButton) nextTrackButton.disabled = true;
         });
 
         // --- END OF COMBINED JAVASCRIPT ---
