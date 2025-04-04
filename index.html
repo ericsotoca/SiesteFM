@@ -32,16 +32,16 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 20px 0;
-            width: 100%;
+            width: 100%; /* Assure que le header prend toute la largeur du body */
         }
 
         .logo {
-            height: auto;
+            height: auto; /* Important pour le ratio */
             display: block;
             margin-left: auto;
             margin-right: auto;
-            max-height: 150px;
-            max-width: 100%;
+            max-height: 150px; /* Limite hauteur sur grand écran */
+            max-width: 100%;   /* Permet de réduire si plus grand que conteneur */
         }
 
         .loading-message {
@@ -291,7 +291,18 @@
         @media (max-width: 600px) {
             body { padding: 10px; }
             header { padding: 15px 0; margin-bottom: 20px; border-bottom: none; }
-            .logo { max-width: 80%; max-height: 100px; }
+
+            /* --- MODIFICATION ICI --- */
+            .logo {
+                width: 100%;       /* Force la largeur à 100% du conteneur (header) */
+                max-width: 100%;   /* Assure qu'il ne dépasse pas (redondant mais sûr) */
+                height: auto;      /* Ajuste la hauteur automatiquement pour garder les proportions */
+                max-height: none;  /* Supprime la limite de hauteur max spécifique au mobile */
+                margin-left: 0;    /* Plus besoin de centrer horizontalement avec auto */
+                margin-right: 0;
+            }
+            /* --- FIN MODIFICATION --- */
+
             #start-radio-button { padding: 12px 24px; font-size: 1em; }
             .overlay-icon { font-size: 2.5em; }
             .button-next { padding: 8px 16px; font-size: 0.8em; bottom: 8px; right: 8px; }
