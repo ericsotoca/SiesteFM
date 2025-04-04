@@ -22,7 +22,7 @@ header {
 }
 
 .logo {
-    max-width: 100%;
+    width: 100%;
     height: auto;
     display: block;
     margin: 0 auto;
@@ -130,7 +130,6 @@ header {
     background-color: #0070ba; /* Bleu PayPal */
 }
 
-
 .support-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -157,7 +156,6 @@ header {
 #now-playing-text:empty {
     display: none; /* Cache l'élément s'il est vide */
 }
-
 
 #initial-play-overlay {
     position: absolute;
