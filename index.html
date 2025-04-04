@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     <!-- Ajouter une police Google -->
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
-   
+
     <style>
         /* --- AJOUT GOOGLE FONTS --- */
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Nunito:wght@400;700&display=swap');
@@ -22,6 +22,7 @@
             margin: 0;
             padding: 0;
         }
+
 
         body {
             background-color: #0D1B2A;
@@ -212,6 +213,9 @@
             padding: 15px;
             background-color: rgba(28, 44, 58, 0.7);
             border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         #nap-buttons-container {
@@ -249,6 +253,28 @@
         .duration-button.active:hover {
             background-color: #5c67f2;
             color: white;
+        }
+
+        #alarm-settings {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            color: #c5c5c5; /* Couleur similaire aux boutons non actifs */
+            font-size: 0.9em;
+        }
+
+        #alarm-settings label {
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        #enable-alarm {
+            margin-left: 5px;
+            vertical-align: middle;
+            cursor: pointer;
+            /* Style pour améliorer l'apparence de la checkbox */
+            accent-color: #5c67f2; /* Couleur lorsque cochée */
         }
 
         #cancel-nap-timer {
@@ -419,9 +445,10 @@
             .support-buttons { gap: 10px; }
             .support-button { padding: 8px 16px; font-size: 0.9em; }
             .iframe-container { margin-bottom: 10px; }
-            #nap-duration-selector-area { padding: 10px; margin-bottom: 15px; }
+            #nap-duration-selector-area { padding: 10px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; }
             #nap-buttons-container { gap: 8px; }
             .duration-button { padding: 6px 12px; font-size: 0.85em; }
+            #alarm-settings { margin-top: 5px; font-size: 0.9em; }
             #cancel-nap-timer { padding: 6px 12px; font-size: 0.85em; }
             #nap-timer-display { font-size: 1em; margin-top: 8px; }
         }
@@ -445,6 +472,10 @@
             <button class="duration-button" data-duration="15">15 min</button>
             <button class="duration-button" data-duration="30">30 min</button>
             <button class="duration-button active" data-duration="0">Illimité</button>
+        </div>
+        <div id="alarm-settings">
+            <label for="enable-alarm">Alarme musicale :</label>
+            <input type="checkbox" id="enable-alarm">
         </div>
         <div>
             <div id="nap-timer-display" class="hidden"></div>
@@ -471,10 +502,10 @@
     <div>
         <img src="merci.png" alt="Merci" class="logo">
     </div>
-	
+
     <!-- --- PARAGRAPHE INTRODUCTIF --- -->
     <p class="soft-text">
-        Chez Sieste FM, nos ondes sont sans pub pour une sieste paisible. Nous croyons que la musique et les ronronnements sont un droit. Votre soutien crée des moments de bonheur... et notre chat mascotte vous remercie! 
+        Chez Sieste FM, nos ondes sont sans pub pour une sieste paisible. Nous croyons que la musique et les ronronnements sont un droit. Votre soutien crée des moments de bonheur... et notre chat mascotte vous remercie!
     </p>
 
     <div class="support-section">
@@ -490,7 +521,7 @@
     <script>
         // --- START OF COMBINED JAVASCRIPT ---
 
-        // Liste complète des pistes
+        // Liste complète des pistes de la radio
         const sunoTracks = [
             { "id": "25a32452-1bfd-4791-b378-7584a0be64f5", "title": "OK - Aerial Awakening", "artist": "Zneip.", "categorie": "Calme Puissant", "duration": 214 },
             { "id": "afd7cad2-6112-4670-9274-378468a1c59d", "title": "OK - After the rain", "artist": "RareRecordLabels1439", "categorie": "Calme Puissant", "duration": 239 },
@@ -506,30 +537,33 @@
             { "id": "72fd52d4-bb7e-48aa-a5e3-0115540c5a62", "title": "OK - Pulse Beneath the Waves", "artist": "Sotoca AI.", "categorie": "Calme Puissant", "duration": 240 },
             { "id": "d4cd5909-e7cc-4751-a6e1-f7a28f44808a", "title": "OK - Reflections in Solitude", "artist": "Henryhan", "categorie": "Calme Puissant", "duration": 179 },
             { "id": "78c49d2c-8774-416b-8470-04742f2883a4", "title": "Bed time Sleep", "artist": "TrippyFrequency282", "categorie": "Calme Puissant", "duration": 125 },
-  	    { "id": "7c45cfb8-97ee-4b51-a283-092845a52702", "title": "Whispering Pines (Remastered)", "artist": "Chillkid", "categorie": "Calme Puissant", "duration": 239 },
-	    { "id": "04495919-1e20-4838-8e7e-132abffe6a68", "title": "Ниагара", "artist": "✨ IGRASVET ✨", "categorie": "Horizon Infini", "duration": 240 },
-	    { "id": "f57d4e70-2914-4f18-8d1b-604447713720", "title": "Nature sound", "artist": "SimpleGregorianChant623", "categorie": "Calme Puissant", "duration": 110 },
-	    { "id": "68389b8a-8243-492b-8c03-0223da676ca4", "title": "Forest", "artist": "SuguMix", "categorie": "Calme Puissant", "duration": 189 },
-	    { "id": "4015d568-f966-42f4-ab0a-804e07eadc08", "title": "My Nature (Instrumental Music)", "artist": "PISIAI89", "categorie": "Calme Puissant", "duration": 240 },
-	    { "id": "30062c06-78b0-4dd7-baad-aba28a3dadba", "title": "In the Woods", "artist": "Music-Mellow", "categorie": "Calme Puissant", "duration": 358 },
-	    { "id": "c3e9d24c-2ea4-4708-a484-f069ae500c10", "title": "BGM for Deep Relaxation", "artist": "Jun_（BGM）", "categorie": "Calme Puissant", "duration": 442 },
-	    { "id": "b20e9c62-b2dc-47ce-b417-c5580f88e5b1", "title": "Untitled", "artist": "GalvanizingBrainwaves286", "categorie": "Esprit Aiguisé", "duration": 240 },
-	    { "id": "ccfee604-1c76-407e-bb76-7b8d774758b0", "title": "Chirp, Chirp", "artist": "Golden ai Music", "categorie": "Esprit Aiguisé", "duration": 240 },
-	    { "id": "3ed6ebd3-97e6-45a0-ace8-3b133006d6cf", "title": "Mind refresh", "artist": "AstoundedLowPassFilters152", "categorie": "Calme Puissant", "duration": 120 },
-	    { "id": "bb5ee7ea-2ea7-461b-9652-c4e645a69d40", "title": "Zen music", "artist": "成神之路\u0026青春永驻@youtubeyu7", "categorie": "Calme Puissant", "duration": 240 },
-	    { "id": "2705f6c2-c1a8-49aa-8d9e-c3a3f528b9a4", "title": "24th form of Tai Chi", "artist": "Frosty_0013", "categorie": "Calme Puissant", "duration": 296 },
-	    { "id": "9ac11789-b51b-4b96-9107-cf1f3a39a015", "title": "Yoga melody", "artist": "AksharA", "categorie": "Calme Puissant", "duration": 240 },
-	    { "id": "d52624e6-abd4-4ed9-9fd1-6d73a9a8ba71", "title": "Calm down", "artist": "Motivation is key to success", "categorie": "Calme Puissant", "duration": 102 },
-	    { "id": "1915fe8e-8ec4-4f7f-919d-cf45f1ab0dff", "title": "Nothing To Say. #baghzaf", "artist": "🎅🤖🎸 Univers Vibes  @AI-VideoMusic🎄", "categorie": "Calme Puissant", "duration": 138 },
-	    { "id": "60cbe1bc-b483-4a33-a29b-3d767b36debf", "title": "🌇𝓢𝓾𝓷𝓼𝓮𝓽🌇", "artist": "RayanAIR™", "categorie": "Calme Puissant", "duration": 120 },
-	    { "id": "17762f8c-cea4-494b-8821-8eec567b0f64", "title": "Calm of the Moment", "artist": "E/V 🦇 ǝɹı̣dɯɐꓥ ɔı̣uoɹʇɔǝןƎ 🦇", "categorie": "Calme Puissant", "duration": 240 },
-	    { "id": "61fdeb18-e249-4127-b245-18eb875a7a4f", "title": "Sleep Ambient", "artist": "☀️ claire ☀️", "categorie": "Calme Puissant", "duration": 240 },
-	    { "id": "39b4776c-cb1c-4b9b-85c5-a1738a4a5b90", "title": "Resonating Hearts", "artist": "BreatheByMaytrixofficial2415", "categorie": "Calme Puissant", "duration": 240 },
-	    { "id": "2cfbe37c-f99d-4b04-ae0c-3be6af1cc1a5", "title": "Majestic Harp", "artist": "Compguy321 👨‍💻", "categorie": "Calme Puissant", "duration": 222 }
+            { "id": "7c45cfb8-97ee-4b51-a283-092845a52702", "title": "Whispering Pines (Remastered)", "artist": "Chillkid", "categorie": "Calme Puissant", "duration": 239 },
+            { "id": "04495919-1e20-4838-8e7e-132abffe6a68", "title": "Ниагара", "artist": "✨ IGRASVET ✨", "categorie": "Horizon Infini", "duration": 240 },
+            { "id": "f57d4e70-2914-4f18-8d1b-604447713720", "title": "Nature sound", "artist": "SimpleGregorianChant623", "categorie": "Calme Puissant", "duration": 110 },
+            { "id": "68389b8a-8243-492b-8c03-0223da676ca4", "title": "Forest", "artist": "SuguMix", "categorie": "Calme Puissant", "duration": 189 },
+            { "id": "4015d568-f966-42f4-ab0a-804e07eadc08", "title": "My Nature (Instrumental Music)", "artist": "PISIAI89", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "30062c06-78b0-4dd7-baad-aba28a3dadba", "title": "In the Woods", "artist": "Music-Mellow", "categorie": "Calme Puissant", "duration": 358 },
+            { "id": "c3e9d24c-2ea4-4708-a484-f069ae500c10", "title": "BGM for Deep Relaxation", "artist": "Jun_（BGM）", "categorie": "Calme Puissant", "duration": 442 },
+            { "id": "b20e9c62-b2dc-47ce-b417-c5580f88e5b1", "title": "Untitled", "artist": "GalvanizingBrainwaves286", "categorie": "Esprit Aiguisé", "duration": 240 },
+            { "id": "ccfee604-1c76-407e-bb76-7b8d774758b0", "title": "Chirp, Chirp", "artist": "Golden ai Music", "categorie": "Esprit Aiguisé", "duration": 240 },
+            { "id": "3ed6ebd3-97e6-45a0-ace8-3b133006d6cf", "title": "Mind refresh", "artist": "AstoundedLowPassFilters152", "categorie": "Calme Puissant", "duration": 120 },
+            { "id": "bb5ee7ea-2ea7-461b-9652-c4e645a69d40", "title": "Zen music", "artist": "成神之路\u0026青春永驻@youtubeyu7", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "2705f6c2-c1a8-49aa-8d9e-c3a3f528b9a4", "title": "24th form of Tai Chi", "artist": "Frosty_0013", "categorie": "Calme Puissant", "duration": 296 },
+            { "id": "9ac11789-b51b-4b96-9107-cf1f3a39a015", "title": "Yoga melody", "artist": "AksharA", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "d52624e6-abd4-4ed9-9fd1-6d73a9a8ba71", "title": "Calm down", "artist": "Motivation is key to success", "categorie": "Calme Puissant", "duration": 102 },
+            { "id": "1915fe8e-8ec4-4f7f-919d-cf45f1ab0dff", "title": "Nothing To Say. #baghzaf", "artist": "🎅🤖🎸 Univers Vibes  @AI-VideoMusic🎄", "categorie": "Calme Puissant", "duration": 138 },
+            { "id": "60cbe1bc-b483-4a33-a29b-3d767b36debf", "title": "🌇𝓢𝓾𝓷𝓼𝓮𝓽🌇", "artist": "RayanAIR™", "categorie": "Calme Puissant", "duration": 120 },
+            { "id": "17762f8c-cea4-494b-8821-8eec567b0f64", "title": "Calm of the Moment", "artist": "E/V 🦇 ǝɹı̣dɯɐꓥ ɔı̣uoɹʇɔǝןƎ 🦇", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "61fdeb18-e249-4127-b245-18eb875a7a4f", "title": "Sleep Ambient", "artist": "☀️ claire ☀️", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "39b4776c-cb1c-4b9b-85c5-a1738a4a5b90", "title": "Resonating Hearts", "artist": "BreatheByMaytrixofficial2415", "categorie": "Calme Puissant", "duration": 240 },
+            { "id": "2cfbe37c-f99d-4b04-ae0c-3be6af1cc1a5", "title": "Majestic Harp", "artist": "Compguy321 👨‍💻", "categorie": "Calme Puissant", "duration": 222 }
         ];
 
+        // Informations sur la musique d'alarme
+        const alarmTrackInfo = { "id": "948b8276-6714-460f-b526-033354e094ce", "title": "Cancer", "artist": "Joy'elle", "categorie": "Alarme", "duration": 157 };
+        const alarmMusicPath = `https://suno.com/embed/${alarmTrackInfo.id}?autoplay=true`; // Utilisation de l'embed Suno comme demandé
+
         // Variables globales
-        const NO_REPEAT_INTERVAL = 30 * 60 * 1000; // 30 minutes en millisecondes
         let currentTrackId = null;
         let nextTrackTimer = null;
         let radioHasStarted = false;
@@ -537,6 +571,8 @@
         let nextTrackPreload = null;
         let napTimerInterval = null;
         let napEndTime = null;
+        let isAlarmEnabled = false;
+        let alarmAudioPlayer = null; // Pour stocker l'iframe de l'alarme
 
         // Éléments du DOM
         const preloader = document.getElementById('preloader');
@@ -549,6 +585,7 @@
         let napButtonsContainer = null;
         let timerDisplay = null;
         let cancelNapButton = null;
+        let enableAlarmCheckbox = null; // Référence à la checkbox
 
         function preloadNextTrack() {
             nextTrackPreload = selectRandomTrack();
@@ -570,11 +607,12 @@
             isLoading = false;
             if (initialOverlay) { initialOverlay.classList.remove('hidden'); }
             if (nextTrackButton) { nextTrackButton.disabled = true; }
+            // Pas besoin d'appeler stopAlarm() ici, car updateTimerDisplay le fera si nécessaire
         }
 
         function getPlayHistory() {
             try { return JSON.parse(localStorage.getItem('sunoRadioHistory')) || []; }
-            catch (e) { console.error("Err hist:", e); return []; }
+            catch (e) { console.error("Erreur lecture historique:", e); return []; }
         }
 
         function updatePlayHistory(trackId) {
@@ -582,68 +620,43 @@
             let history = getPlayHistory();
             const track = sunoTracks.find(t => t.id === trackId);
             if (track) {
-                // Ajouter le morceau avec timestamp actuel
-                history.unshift({ 
-                    id: trackId, 
-                    title: track.title, 
-                    artist: track.artist, 
-                    timestamp: new Date().toISOString() 
-                });
-                
-                // Limiter la taille de l'historique
-                if (history.length > 30) history = history.slice(0, 30);
-                
-                try { 
-                    localStorage.setItem('sunoRadioHistory', JSON.stringify(history)); 
-                } catch (e) { 
-                    console.error("Err save hist:", e); 
+                // Ajouter seulement si différent du dernier morceau joué
+                if (history.length === 0 || (history.length > 0 && history[0].id !== trackId)) {
+                    history.unshift({ id: trackId, title: track.title, artist: track.artist, timestamp: new Date().toISOString() });
+                    if (history.length > 15) history = history.slice(0, 15); // Limiter l'historique
+                    try { localStorage.setItem('sunoRadioHistory', JSON.stringify(history)); }
+                    catch (e) { console.error("Erreur sauvegarde historique:", e); }
                 }
             }
         }
 
         function selectRandomTrack() {
-            const now = Date.now();
             const history = getPlayHistory();
             let availableTracks = [...sunoTracks];
-            
             if (availableTracks.length === 0) return null;
-            
-            // Filtrer les morceaux joués dans l'intervalle NO_REPEAT_INTERVAL
-            const recentlyPlayedIds = history
-                .filter(item => {
-                    const playedAt = new Date(item.timestamp).getTime();
-                    return (now - playedAt) < NO_REPEAT_INTERVAL;
-                })
-                .map(item => item.id);
-            
-            // Toujours exclure le morceau actuellement en lecture
-            if (currentTrackId) recentlyPlayedIds.push(currentTrackId);
-            
-            // Filtrer les pistes disponibles
-            let filteredTracks = availableTracks.filter(track => !recentlyPlayedIds.includes(track.id));
-            
-            // Si aucune piste n'est disponible après filtrage (cas rare), prendre la moins récemment jouée
-            if (filteredTracks.length === 0 && availableTracks.length > 0) {
-                console.log("Tous les morceaux ont été joués récemment, sélection du moins récent");
-                
-                // Trier l'historique du plus ancien au plus récent
-                const sortedHistory = [...history].sort((a, b) => {
-                    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-                });
-                
-                // Prendre le morceau le plus ancien qui n'est pas actuellement en lecture
-                for (const historyItem of sortedHistory) {
-                    if (historyItem.id !== currentTrackId) {
-                        const oldestTrack = availableTracks.find(t => t.id === historyItem.id);
-                        if (oldestTrack) return oldestTrack;
-                    }
-                }
-                
-                // Si même ça ne fonctionne pas, prendre n'importe quel morceau sauf l'actuel
-                filteredTracks = availableTracks.filter(track => track.id !== currentTrackId);
-                if (filteredTracks.length === 0) filteredTracks = availableTracks;
+
+            const historyDepthToExclude = Math.min(5, availableTracks.length - 1); // Exclure les 5 derniers joués (si possible)
+            const tracksToExclude = [];
+            if (currentTrackId) tracksToExclude.push(currentTrackId); // Exclure le morceau actuel
+            for (let i = 0; i < historyDepthToExclude && i < history.length; i++) {
+                tracksToExclude.push(history[i].id);
             }
-            
+
+            const uniqueExclusions = [...new Set(tracksToExclude)]; // IDs uniques à exclure
+
+            let filteredTracks = availableTracks.filter(track => !uniqueExclusions.includes(track.id));
+
+            // Si tous les morceaux ont été exclus (peu probable avec 15 max),
+            // autoriser la relecture sauf le dernier joué et l'actuel
+            if (filteredTracks.length === 0 && availableTracks.length > 0) {
+                const lastPlayedId = history.length > 0 ? history[0].id : null;
+                filteredTracks = availableTracks.filter(track => track.id !== currentTrackId && track.id !== lastPlayedId);
+                if (filteredTracks.length === 0) filteredTracks = availableTracks; // Fallback: choisir n'importe lequel
+            } else if (filteredTracks.length === 0) {
+                 return null; // Aucune piste disponible
+            }
+
+            // Sélection aléatoire parmi les pistes filtrées
             return filteredTracks[Math.floor(Math.random() * filteredTracks.length)];
         }
 
@@ -653,13 +666,18 @@
                 if (nextTrackTimer) clearTimeout(nextTrackTimer);
                 nextTrackTimer = setTimeout(() => { loadNextTrack(); }, durationMs);
             } else {
+                console.warn(`Durée invalide pour ${track?.title}, passage au suivant dans 30s`);
                 if (nextTrackTimer) clearTimeout(nextTrackTimer);
-                nextTrackTimer = null;
+                nextTrackTimer = setTimeout(() => { loadNextTrack(); }, 30000); // Fallback
             }
         }
 
         function loadTrack(track) {
-            if (!track || !track.id) { setTimeout(loadNextTrack, 3000); return; }
+            if (!track || !track.id) {
+                console.error("Tentative de chargement d'une piste invalide.");
+                setTimeout(loadNextTrack, 3000); // Essayer la suivante
+                return;
+            }
             if (nextTrackTimer) clearTimeout(nextTrackTimer);
             currentTrackId = track.id;
             isLoading = true;
@@ -684,15 +702,16 @@
                 preloadNextTrack();
             };
             iframe.onerror = (e) => {
+                console.error(`Erreur chargement iframe pour ${track.title}:`, e);
                 iframeTarget.innerHTML = `<p class="loading-message" id="iframe-loading-placeholder">Erreur chargement: "${track.title}". Suivant...</p>`;
                 isLoading = false;
-                if (nextTrackTimer) clearῖTimeout(nextTrackTimer);
+                if (nextTrackTimer) clearTimeout(nextTrackTimer);
                 currentTrackId = null;
-                setTimeout(loadNextTrack, 5000);
+                setTimeout(loadNextTrack, 5000); // Attendre avant de réessayer
             };
 
-            const currentPlaceholder = document.getElementById('iframe-loading-placeholder');
-            if (currentPlaceholder) currentPlaceholder.remove();
+            // Nettoyer l'ancien contenu avant d'ajouter le nouveau
+            iframeTarget.innerHTML = '';
             iframeTarget.appendChild(iframe);
         }
 
@@ -702,13 +721,16 @@
             iframeTarget.innerHTML = '<p class="loading-message" id="iframe-loading-placeholder">Chargement...</p>';
             if (nextTrackTimer) clearTimeout(nextTrackTimer);
             currentTrackId = null;
+
+            // Utiliser un petit délai pour laisser l'UI se mettre à jour
             setTimeout(() => {
                 const trackToLoad = nextTrackPreload || selectRandomTrack();
-                nextTrackPreload = null;
+                nextTrackPreload = null; // Utiliser la piste préchargée
                 if (trackToLoad) {
                     loadTrack(trackToLoad);
                 } else {
-                    iframeTarget.innerHTML = '<p class="loading-message" id="iframe-loading-placeholder">Erreur : Aucun morceau.</p>';
+                    console.error("Impossible de sélectionner une nouvelle piste.");
+                    iframeTarget.innerHTML = '<p class="loading-message" id="iframe-loading-placeholder">Erreur : Aucun morceau disponible.</p>';
                     isLoading = false;
                 }
             }, 150);
@@ -716,7 +738,17 @@
 
         function startRadioFirstTime() {
             if (radioHasStarted) return;
-            try { const audioContext = new (window.AudioContext || window.webkitAudioContext)(); if (audioContext.state === 'suspended') { audioContext.resume(); } } catch (e) { console.warn("AudioCtx fail:", e); }
+            // Tentative de déblocage du contexte audio (important pour l'autoplay)
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume().then(() => {
+                        console.log("AudioContext resumed successfully.");
+                    }).catch(e => console.error("AudioContext resume failed:", e));
+                }
+            } catch (e) {
+                console.warn("AudioContext not supported or failed to initialize:", e);
+            }
             radioHasStarted = true;
             initialOverlay.classList.add('hidden');
             if(nextTrackButton) nextTrackButton.disabled = false;
@@ -737,30 +769,71 @@
         }
 
         function resetNapTimerUI() {
-            const durationButtons = napButtonsContainer.querySelectorAll('.duration-button');
-            durationButtons.forEach(btn => btn.classList.remove('active'));
-            const unlimitedButton = napButtonsContainer.querySelector('.duration-button[data-duration="0"]');
+            const durationButtons = napButtonsContainer?.querySelectorAll('.duration-button');
+            durationButtons?.forEach(btn => btn.classList.remove('active'));
+            // Activer "Illimité" par défaut
+            const unlimitedButton = napButtonsContainer?.querySelector('.duration-button[data-duration="0"]');
             if (unlimitedButton) unlimitedButton.classList.add('active');
             if (timerDisplay) timerDisplay.classList.add('hidden');
             if (cancelNapButton) cancelNapButton.classList.add('hidden');
+        }
+
+        // Fonction pour jouer l'alarme
+        function playAlarm() {
+            stopAlarm(); // Arrêter l'alarme précédente si elle existe
+            console.log("Playing alarm...");
+            alarmAudioPlayer = document.createElement('iframe');
+            alarmAudioPlayer.id = 'alarm-iframe';
+            alarmAudioPlayer.src = alarmMusicPath;
+            alarmAudioPlayer.allow = 'autoplay';
+            alarmAudioPlayer.style.display = 'none'; // Cacher l'iframe
+            alarmAudioPlayer.onerror = (e) => {
+                console.error("Erreur chargement iframe alarme:", e);
+                // Afficher un message d'erreur à l'utilisateur ?
+            };
+            document.body.appendChild(alarmAudioPlayer);
+        }
+
+        // Fonction pour arrêter l'alarme
+        function stopAlarm() {
+            if (alarmAudioPlayer) {
+                console.log("Stopping alarm.");
+                alarmAudioPlayer.remove();
+                alarmAudioPlayer = null;
+            }
         }
 
         function updateTimerDisplay() {
             if (!napEndTime || !timerDisplay || !cancelNapButton) return;
             const now = Date.now();
             const remainingSeconds = Math.round((napEndTime - now) / 1000);
+
             if (remainingSeconds <= 0) {
                 clearInterval(napTimerInterval);
                 napTimerInterval = null;
                 napEndTime = null;
+
                 timerDisplay.textContent = "Fin de la sieste !";
                 timerDisplay.classList.remove('hidden');
                 cancelNapButton.classList.add('hidden');
+
+                // Arrêter la radio d'abord
                 if (typeof stopRadioPlayback === 'function') { stopRadioPlayback(); }
+
+                // Jouer l'alarme si activée
+                if (isAlarmEnabled) {
+                    playAlarm();
+                }
+
                 resetNapTimerUI();
+
+                // Cacher le message et arrêter l'alarme après un délai
                 setTimeout(() => {
-                    if (!napTimerInterval) { timerDisplay.classList.add('hidden'); }
-                }, 5000);
+                    if (!napTimerInterval && timerDisplay) { // Vérifier si un autre timer n'a pas été lancé entre temps
+                         timerDisplay.classList.add('hidden');
+                         stopAlarm();
+                    }
+                }, 15000); // Laisser l'alarme sonner pendant 15 secondes
             } else {
                 timerDisplay.textContent = `Temps restant : ${formatTime(remainingSeconds)}`;
                 timerDisplay.classList.remove('hidden');
@@ -769,18 +842,28 @@
         }
 
         function startNapTimer(durationMinutes) {
+            stopAlarm(); // Arrêter l'alarme si elle jouait
             if (napTimerInterval) clearInterval(napTimerInterval);
+
             if (durationMinutes > 0) {
                 const durationMillis = durationMinutes * 60 * 1000;
                 napEndTime = Date.now() + durationMillis;
-                updateTimerDisplay();
+                updateTimerDisplay(); // Afficher immédiatement
                 napTimerInterval = setInterval(updateTimerDisplay, 1000);
                 if (cancelNapButton) cancelNapButton.classList.remove('hidden');
                 if (timerDisplay) timerDisplay.classList.remove('hidden');
-                if (!radioHasStarted && typeof startRadioFirstTime === 'function') { startRadioFirstTime(); }
-            } else {
+
+                // Démarrer la radio si elle n'est pas déjà lancée et qu'un timer est actif
+                if (!radioHasStarted && typeof startRadioFirstTime === 'function') {
+                    startRadioFirstTime();
+                }
+            } else { // Cas "Illimité"
                 napEndTime = null;
                 resetNapTimerUI();
+                // Démarrer la radio si ce n'est pas déjà fait
+                if (!radioHasStarted && typeof startRadioFirstTime === 'function') {
+                    startRadioFirstTime();
+                }
             }
         }
 
@@ -791,62 +874,136 @@
             if (timerDisplay) {
                 timerDisplay.textContent = "Minuteur annulé.";
                 timerDisplay.classList.remove('hidden');
-                setTimeout(() => { timerDisplay.classList.add('hidden'); }, 2000);
+                setTimeout(() => {
+                    if (!napTimerInterval) { // Seulement si pas redémarré
+                         timerDisplay.classList.add('hidden');
+                    }
+                }, 2000);
             }
             resetNapTimerUI();
+            stopAlarm(); // Arrêter l'alarme si elle jouait
         }
 
         function initializeNapTimerUI() {
             napButtonsContainer = document.getElementById('nap-buttons-container');
             timerDisplay = document.getElementById('nap-timer-display');
             cancelNapButton = document.getElementById('cancel-nap-timer');
-            if (!napButtonsContainer || !timerDisplay || !cancelNapButton) { return; }
+            enableAlarmCheckbox = document.getElementById('enable-alarm'); // Récupérer la checkbox
+
+            if (!napButtonsContainer || !timerDisplay || !cancelNapButton || !enableAlarmCheckbox) {
+                console.error("Un ou plusieurs éléments UI du minuteur n'ont pas été trouvés.");
+                return;
+            }
+
+            // Gestion des clics sur les boutons de durée
             napButtonsContainer.addEventListener('click', (event) => {
                 if (event.target.classList.contains('duration-button')) {
                     const duration = parseInt(event.target.dataset.duration, 10);
-                    napButtonsContainer.querySelectorAll('.duration-button').forEach(btn => btn.classList.remove('active'));
-                    event.target.classList.add('active');
-                    startNapTimer(duration);
+                    if (!isNaN(duration)) {
+                        napButtonsContainer.querySelectorAll('.duration-button').forEach(btn => btn.classList.remove('active'));
+                        event.target.classList.add('active');
+                        startNapTimer(duration);
+                    }
                 }
             });
+
+            // Gestion du clic sur le bouton Annuler
             cancelNapButton.addEventListener('click', cancelNapTimer);
+
+            // Gestion du changement d'état de la checkbox d'alarme
+            enableAlarmCheckbox.addEventListener('change', () => {
+                isAlarmEnabled = enableAlarmCheckbox.checked;
+                console.log(`Alarme musicale ${isAlarmEnabled ? 'activée' : 'désactivée'}.`);
+            });
+
+            // Initialiser l'état de l'UI
             resetNapTimerUI();
+            // Mettre à jour l'état initial de la variable d'alarme
+            isAlarmEnabled = enableAlarmCheckbox.checked;
         }
 
         function setupEventListeners() {
-            startButton.addEventListener('click', (event) => { event.stopPropagation(); startRadioFirstTime(); });
-            nextTrackButton.addEventListener('click', () => { if (isLoading) return; if (!radioHasStarted) { startRadioFirstTime(); } else { loadNextTrack(); } });
+            // Bouton pour lancer la radio la première fois
+            if (startButton) {
+                startButton.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Empêcher la propagation si nécessaire
+                    startRadioFirstTime();
+                 });
+            } else {
+                 console.error("Bouton start-radio-button non trouvé");
+            }
+
+            // Bouton pour passer au morceau suivant
+            if (nextTrackButton) {
+                nextTrackButton.addEventListener('click', () => {
+                    if (isLoading) return; // Ne rien faire si déjà en chargement
+                    if (!radioHasStarted) {
+                        startRadioFirstTime(); // Démarrer si pas encore fait
+                    } else {
+                        loadNextTrack(); // Charger le morceau suivant
+                    }
+                });
+            } else {
+                console.error("Bouton next-track non trouvé");
+            }
+
+
+            // Gestion hors ligne / en ligne
             window.addEventListener('offline', () => {
+                console.warn("Connexion perdue.");
                 if (nextTrackTimer) clearTimeout(nextTrackTimer);
                 const currentIframe = document.getElementById('suno-iframe');
                 if (currentIframe) {
-                    currentIframe.style.display = 'none';
-                    if (!document.getElementById('offline-placeholder')) { /* Add offline message */ }
+                    currentIframe.style.display = 'none'; // Masquer le lecteur
+                    // Optionnel: Afficher un message
+                    if (!document.getElementById('offline-placeholder')) {
+                        const offlineMsg = document.createElement('p');
+                        offlineMsg.id = 'offline-placeholder';
+                        offlineMsg.className = 'loading-message';
+                        offlineMsg.textContent = "Connexion perdue. En attente de reconnexion...";
+                        iframeTarget.appendChild(offlineMsg);
+                    }
                 }
                 if(nextTrackButton) nextTrackButton.disabled = true;
+                 stopAlarm(); // Arrêter l'alarme si hors ligne
             });
+
             window.addEventListener('online', () => {
+                console.info("Connexion rétablie.");
                 if(nextTrackButton) nextTrackButton.disabled = false;
                 const offlineMsg = document.getElementById('offline-placeholder');
-                if (offlineMsg) offlineMsg.remove();
+                if (offlineMsg) offlineMsg.remove(); // Retirer le message hors ligne
                 const currentIframe = document.getElementById('suno-iframe');
-                if (currentIframe) currentIframe.style.display = 'block';
-                if (radioHasStarted) { loadNextTrack(); }
+                if (currentIframe) currentIframe.style.display = 'block'; // Réafficher le lecteur
+                // Relancer la lecture si la radio était active
+                if (radioHasStarted && !currentTrackId) {
+                    console.log("Reprise de la lecture après reconnexion.");
+                    loadNextTrack();
+                }
             });
         }
 
+        // Initialisation lorsque le DOM est prêt
         document.addEventListener('DOMContentLoaded', () => {
+            // Vérifier si la liste des pistes est valide
             if (!sunoTracks || sunoTracks.length === 0) {
                 const overlayContent = document.getElementById('initial-play-overlay');
-                if(overlayContent) { overlayContent.innerHTML = '<p class="loading-message" style="color: red;">Erreur: Liste morceaux vide!</p>'; }
-                else { document.body.innerHTML = '<p style="color: red; text-align: center; padding: 50px;">Erreur: Liste morceaux vide!</p>'; }
+                 const bodyContent = document.body;
+                const errorMessage = '<p class="loading-message" style="color: red; padding: 50px;">Erreur critique : La liste des morceaux est vide ou n\'a pas pu être chargée.</p>';
+                if(overlayContent) {
+                     overlayContent.innerHTML = errorMessage;
+                     overlayContent.style.cursor = 'default'; // Pas cliquable
+                 } else if (bodyContent) {
+                     bodyContent.innerHTML = errorMessage; // Remplacer tout le contenu si l'overlay n'existe pas
+                 }
                 if (preloader) preloader.classList.add('hidden');
-                return;
+                return; // Arrêter l'exécution
             }
-            initializeNapTimerUI();
-            setupEventListeners();
-            if (preloader) preloader.classList.add('hidden');
-            if(nextTrackButton) nextTrackButton.disabled = true;
+
+            initializeNapTimerUI(); // Initialiser les éléments du minuteur
+            setupEventListeners(); // Configurer les écouteurs d'événements
+            if (preloader) preloader.classList.add('hidden'); // Cacher le préchargeur
+            if(nextTrackButton) nextTrackButton.disabled = true; // Désactiver "Suivant" initialement
         });
 
         // --- END OF COMBINED JAVASCRIPT ---
@@ -857,9 +1014,9 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').then(registration => {
-                    console.log('SW registered: ', registration.scope);
-                }, err => {
-                    console.log('SW registration failed: ', err);
+                    console.log('Service Worker enregistré avec la portée :', registration.scope);
+                }).catch(err => {
+                    console.error('Échec de l\'enregistrement du Service Worker :', err);
                 });
             });
         }
