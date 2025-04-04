@@ -9,7 +9,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-
+<!-- Ajouter une police Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
+   
     <style>
         /* --- AJOUT GOOGLE FONTS --- */
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Nunito:wght@400;700&display=swap');
@@ -21,6 +23,7 @@
             padding: 0;
         }
 
+
         body {
             background-color: #0D1B2A;
             color: #ffffff;
@@ -28,6 +31,7 @@
             max-width: 800px;
             margin: 0 auto;
             font-family: 'Nunito', sans-serif; /* Police principale */
+			font-family: 'Lora', serif; /* Utiliser la police douce */
         }
 
         header {
@@ -36,6 +40,17 @@
             padding: 20px 0;
             width: 100%;
         }
+		.soft-text {
+			font-size: 1.2em;
+			color: #ffffff; /* Texte blanc */
+			font-style: italic; /* Texte en italique */
+			margin: 20px 0; /* Ajoute de l'espace au-dessus et en dessous du texte */
+			padding: 10px;  /* Ajoute de l'espace à l'intérieur du texte */
+			line-height: 1.6; /* Ajuste l'espacement entre les lignes */
+			background-color: rgba(255, 255, 255, 0.1); /* Fond légèrement transparent pour un effet subtil */
+			border-radius: 8px; /* Coins arrondis pour un look plus doux */
+			display: inline-block; /* Pour que le fond s'adapte à la taille du texte */
+		}
 
         .logo {
             height: auto;
@@ -455,8 +470,8 @@
     </div>
 
     <!-- --- PARAGRAPHE INTRODUCTIF --- -->
-    <p class="intro-support-text">
-        "Nos ondes sont sans pub, comme votre sieste devrait l'être : paisible et ininterrompue ! Chez Sieste FM, nous croyons que la musique et les ronronnements sont un droit fondamental. Votre soutien transforme chaque note en un petit moment de bonheur partagé... et notre chat mascotte vous en remercie !"
+    <p class="soft-text">
+        Chez Sieste FM, nos ondes sont sans pub pour une sieste paisible. Nous croyons que la musique et les ronronnements sont un droit. Votre soutien crée des moments de bonheur... et notre chat mascotte vous remercie! 
     </p>
 
     <div class="support-section">
