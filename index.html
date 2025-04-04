@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-<!-- Ajouter une police Google -->
+    <!-- Ajouter une police Google -->
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
    
     <style>
@@ -22,7 +22,6 @@
             margin: 0;
             padding: 0;
         }
-
 
         body {
             background-color: #0D1B2A;
@@ -526,6 +525,7 @@
         ];
 
         // Variables globales
+        const NO_REPEAT_INTERVAL = 30 * 60 * 1000; // 30 minutes en millisecondes
         let currentTrackId = null;
         let nextTrackTimer = null;
         let radioHasStarted = false;
@@ -578,30 +578,68 @@
             let history = getPlayHistory();
             const track = sunoTracks.find(t => t.id === trackId);
             if (track) {
-                if (history.length === 0 || history[0].id !== trackId) {
-                    history.unshift({ id: trackId, title: track.title, artist: track.artist, timestamp: new Date().toISOString() });
-                    if (history.length > 15) history = history.slice(0, 15);
-                    try { localStorage.setItem('sunoRadioHistory', JSON.stringify(history)); }
-                    catch (e) { console.error("Err save hist:", e); }
+                // Ajouter le morceau avec timestamp actuel
+                history.unshift({ 
+                    id: trackId, 
+                    title: track.title, 
+                    artist: track.artist, 
+                    timestamp: new Date().toISOString() 
+                });
+                
+                // Limiter la taille de l'historique
+                if (history.length > 30) history = history.slice(0, 30);
+                
+                try { 
+                    localStorage.setItem('sunoRadioHistory', JSON.stringify(history)); 
+                } catch (e) { 
+                    console.error("Err save hist:", e); 
                 }
             }
         }
 
         function selectRandomTrack() {
+            const now = Date.now();
             const history = getPlayHistory();
             let availableTracks = [...sunoTracks];
+            
             if (availableTracks.length === 0) return null;
-            const historyDepthToExclude = Math.min(5, availableTracks.length - 1);
-            const tracksToExclude = [];
-            if (currentTrackId) tracksToExclude.push(currentTrackId);
-            for (let i = 0; i < historyDepthToExclude && i < history.length; i++) { tracksToExclude.push(history[i].id); }
-            const uniqueExclusions = [...new Set(tracksToExclude)];
-            let filteredTracks = availableTracks.filter(track => !uniqueExclusions.includes(track.id));
+            
+            // Filtrer les morceaux joués dans l'intervalle NO_REPEAT_INTERVAL
+            const recentlyPlayedIds = history
+                .filter(item => {
+                    const playedAt = new Date(item.timestamp).getTime();
+                    return (now - playedAt) < NO_REPEAT_INTERVAL;
+                })
+                .map(item => item.id);
+            
+            // Toujours exclure le morceau actuellement en lecture
+            if (currentTrackId) recentlyPlayedIds.push(currentTrackId);
+            
+            // Filtrer les pistes disponibles
+            let filteredTracks = availableTracks.filter(track => !recentlyPlayedIds.includes(track.id));
+            
+            // Si aucune piste n'est disponible après filtrage (cas rare), prendre la moins récemment jouée
             if (filteredTracks.length === 0 && availableTracks.length > 0) {
-                const lastPlayedId = history.length > 0 ? history[0].id : null;
-                filteredTracks = availableTracks.filter(track => track.id !== currentTrackId && track.id !== lastPlayedId);
+                console.log("Tous les morceaux ont été joués récemment, sélection du moins récent");
+                
+                // Trier l'historique du plus ancien au plus récent
+                const sortedHistory = [...history].sort((a, b) => {
+                    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+                });
+                
+                // Prendre le morceau le plus ancien qui n'est pas actuellement en lecture
+                for (const historyItem of sortedHistory) {
+                    if (historyItem.id !== currentTrackId) {
+                        const oldestTrack = availableTracks.find(t => t.id === historyItem.id);
+                        if (oldestTrack) return oldestTrack;
+                    }
+                }
+                
+                // Si même ça ne fonctionne pas, prendre n'importe quel morceau sauf l'actuel
+                filteredTracks = availableTracks.filter(track => track.id !== currentTrackId);
                 if (filteredTracks.length === 0) filteredTracks = availableTracks;
-            } else if (filteredTracks.length === 0) { return null; }
+            }
+            
             return filteredTracks[Math.floor(Math.random() * filteredTracks.length)];
         }
 
@@ -644,7 +682,7 @@
             iframe.onerror = (e) => {
                 iframeTarget.innerHTML = `<p class="loading-message" id="iframe-loading-placeholder">Erreur chargement: "${track.title}". Suivant...</p>`;
                 isLoading = false;
-                if (nextTrackTimer) clearTimeout(nextTrackTimer);
+                if (nextTrackTimer) clearῖTimeout(nextTrackTimer);
                 currentTrackId = null;
                 setTimeout(loadNextTrack, 5000);
             };
