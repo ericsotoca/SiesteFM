@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sieste FM - La Radio qui vous endort en douceur.</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Préchargement du logo .png comme utilisé dans le HTML -->
+    <!-- Préchargement du logo -->
     <link rel="preload" href="logo.png" as="image">
-    <!-- Ajout potentiel du manifeste pour PWA -->
+    <!-- Manifeste pour PWA -->
     <link rel="manifest" href="manifest.json">
-    <!-- Ajout potentiel d'icônes pour iOS -->
+    <!-- Icônes pour iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png"> <!-- Exemple, ajuster le chemin -->
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png"> <!-- Ajuster le chemin si nécessaire -->
 
 </head>
 <body>
@@ -22,14 +22,12 @@
     </div>
 
     <header>
-        <!-- Utilisation de logo.png comme défini dans le preload -->
         <img src="logo.png" alt="Sieste FM" class="logo">
     </header>
 
     <div class="iframe-container" id="player-container">
         <div id="initial-play-overlay">
             <span class="overlay-icon" aria-hidden="true">🎵</span>
-            <!-- L'aria-label peut être simplifié si "SOTOCA" n'est plus pertinent -->
             <button id="start-radio-button" aria-label="Lancer la radio Sieste FM">Lancer la Radio</button>
             <p class="overlay-text">(Cliquez pour démarrer)</p>
         </div>
@@ -39,13 +37,13 @@
     </div>
 
     <div class="now-playing" aria-live="polite">
-        <p id="now-playing-text"></p>
+        <p id="now-playing-text"></p> <!-- Ne sera plus utilisé pour Titre/Artiste -->
     </div>
 
-    <!-- La div 'controls' est vide, pourrait être supprimée si non utilisée pour autre chose -->
-    <div class="controls">
+    <!-- La div 'controls' est vide et non stylée, peut être supprimée -->
+    <!-- <div class="controls"> -->
         <!-- Vide -->
-    </div>
+    <!-- </div> -->
 
     <div class="support-section">
         <h2 class="support-title">SOUTENIR Sieste FM</h2>

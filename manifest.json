@@ -5,16 +5,19 @@
     {
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable" /* Ajout purpose pour meilleure intégration */
     },
     {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+       "purpose": "any maskable" /* Ajout purpose */
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/index.html", /* ou juste "/" si le serveur est configuré */
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000"
+  "background_color": "#0D1B2A", /* Fond assorti */
+  "theme_color": "#0D1B2A", /* Couleur de la barre de titre/statut */
+  "description": "La Radio qui vous endort en douceur." /* Ajout description */
 }

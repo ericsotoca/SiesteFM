@@ -1,4 +1,4 @@
-// Liste complète des pistes sans catégorisation fonctionnelle nécessaire ici
+// Liste complète des pistes (la propriété 'categorie' n'est plus utilisée fonctionnellement)
 const sunoTracks = [
     { "id": "674e86cb-0395-414a-a291-a4c11a9efc4d", "title": "50 decimal places of pi", "artist": "Suno AI", "categorie": "Esprit Aiguisé", "duration": 180 },
     { "id": "1be45c7f-efee-4288-bb46-24bc4ac633a6", "title": "A Walk in the Park", "artist": "Suno AI", "categorie": "Calme Puissant", "duration": 131 },
@@ -39,7 +39,7 @@ const sunoTracks = [
     { "id": "1f54ea49-dddd-47b3-a3d3-264f1579caa0", "title": "No apologies (Remastered)", "artist": "Ovi", "categorie": "Esprit Aiguisé", "duration": 151 },
     { "id": "9d601e01-1282-4a76-afb5-b710edc38f8f", "title": "Onde cristalline de sérénité", "artist": "JeanMiK2.", "categorie": "Calme Puissant", "duration": 144 },
     { "id": "aa0febaa-6c8b-444b-a34f-db5155272b2b", "title": "Peaceful Meadow", "artist": "Suno AI", "categorie": "Calme Puissant", "duration": 152 },
-    // { "id": "6805b1a2-1700-41b3-80db-c285045e99e8", "title": "PODŁOŻE BUJANE", "artist": "ZoleMusicAI.", "categorie": "Calme Puissant", "duration": 223 }, // Duplicate ID, commented out
+    // { "id": "6805b1a2-1700-41b3-80db-c285045e99e8", "title": "PODŁOŻE BUJANE", "artist": "ZoleMusicAI.", "categorie": "Calme Puissant", "duration": 223 }, // ID dupliqué, commenté
     { "id": "72fd52d4-bb7e-48aa-a5e3-0115540c5a62", "title": "Pulse Beneath the Waves", "artist": "Sotoca AI.", "categorie": "Calme Puissant", "duration": 240 },
     { "id": "67764712-b129-4f78-bab2-1c03e2014655", "title": "Rambling Railroad", "artist": "JeanMiK2.", "categorie": "Horizon Infini", "duration": 133 },
     { "id": "d4cd5909-e7cc-4751-a6e1-f7a28f44808a", "title": "Reflections in Solitude", "artist": "Henryhan", "categorie": "Calme Puissant", "duration": 179 },
@@ -71,11 +71,11 @@ let nextTrackTimer = null;
 let radioHasStarted = false;
 let isLoading = false;
 let startTime = null;
-let nextTrackPreload = null; // Nouvelle variable pour le préchargement
+let progressInterval = null; // Pour garder une référence à l'intervalle de progression
+let nextTrackPreload = null;
 
 // Éléments du DOM
 const preloader = document.getElementById('preloader');
-// const categoryButtonsContainer = document.querySelector('.category-buttons'); // Supprimé
 const playerContainer = document.getElementById('player-container');
 const initialOverlay = document.getElementById('initial-play-overlay');
 const startButton = document.getElementById('start-radio-button');
@@ -87,6 +87,12 @@ const progressBar = document.getElementById('progress-bar');
 // Fonction de préchargement
 function preloadNextTrack() {
     nextTrackPreload = selectRandomTrack();
+    // Optionnel: précharger l'iframe elle-même peut être tenté mais complexe
+    // const preloadLink = document.createElement('link');
+    // preloadLink.rel = 'preload';
+    // preloadLink.href = `https://suno.com/embed/${nextTrackPreload.id}`;
+    // preloadLink.as = 'document';
+    // document.head.appendChild(preloadLink); // Attention à la gestion de ces liens
 }
 
 // Fonctions Utilitaires
@@ -100,33 +106,23 @@ function getPlayHistory() {
     }
 }
 
-// Fonction mise à jour pour ne plus afficher le titre/artiste
 function updatePlayHistory(trackId) {
     if (!trackId) return;
     let history = getPlayHistory();
     const track = sunoTracks.find(t => t.id === trackId);
     if (track) {
-        // ****************************************************
-        // ANCIENNE LIGNE (supprimée ou commentée ci-dessous) :
-        // nowPlayingText.textContent = `En cours: ${track.title} par ${track.artist}`;
-
-        // NOUVELLE APPROCHE : On vide le texte ici pour effacer
-        // les messages "Chargement..." ou "Erreur..." précédents
-        // lorsque la piste démarre correctement.
+        // On vide le texte ici pour effacer "Chargement...", "Erreur...", etc.
         nowPlayingText.textContent = '';
-        // ****************************************************
 
-
-        // Le reste de la logique pour l'historique localStorage reste inchangé
+        // Logique historique
         if (history.length === 0 || history[0].id !== trackId) {
             history.unshift({
                 id: trackId,
                 title: track.title,
                 artist: track.artist,
-                // category: track.categorie, // Déjà commenté/supprimé
                 timestamp: new Date().toISOString()
             });
-            if (history.length > 15) history = history.slice(0, 15); // Garde les 15 derniers
+            if (history.length > 15) history = history.slice(0, 15);
             try {
                 localStorage.setItem('sunoRadioHistory', JSON.stringify(history));
             } catch (e) {
@@ -136,62 +132,72 @@ function updatePlayHistory(trackId) {
     }
 }
 
-// Fonction getTracksByCategory supprimée car inutile sans catégories
 
 function selectRandomTrack() {
     const history = getPlayHistory();
-    let availableTracks = [...sunoTracks]; // Commence avec toutes les pistes
+    let availableTracks = [...sunoTracks];
 
     if (availableTracks.length === 0) {
         console.warn(`Aucun morceau disponible.`);
-        return null; // Ou gérer autrement l'absence de pistes
+        return null;
     }
 
-    // Filtrer pour éviter les 2 dernières pistes jouées (si possible)
-    if (history.length > 0 && availableTracks.length > 2) {
-        const recentTrackIds = [...new Set(history.slice(0, 2).map(item => item.id))];
-        const filteredTracks = availableTracks.filter(track => !recentTrackIds.includes(track.id));
+    // Exclure la piste actuelle et la précédente si possible
+    const tracksToExclude = [];
+    if (currentTrackId) {
+        tracksToExclude.push(currentTrackId);
+    }
+    if (history.length > 0) {
+        tracksToExclude.push(history[0].id); // La dernière jouée enregistrée
+    }
+     if (history.length > 1) { // Optionnel: exclure aussi l'avant-dernière
+        tracksToExclude.push(history[1].id);
+    }
+
+    const uniqueExclusions = [...new Set(tracksToExclude)]; // IDs uniques à exclure
+
+    if (availableTracks.length > uniqueExclusions.length) { // S'il reste des pistes après exclusion
+        const filteredTracks = availableTracks.filter(track => !uniqueExclusions.includes(track.id));
         if (filteredTracks.length > 0) {
             availableTracks = filteredTracks;
         }
-        // Si le filtrage ne laisse aucune piste (improbable mais possible), on garde la liste complète non filtrée
     }
+    // Si après filtrage il ne reste rien (ou pas assez de pistes au départ), on choisit parmi toutes
 
-    // Sélection aléatoire parmi les pistes disponibles
     return availableTracks[Math.floor(Math.random() * availableTracks.length)];
 }
 
-// Fonction updateCategoryButtons supprimée
 
 function updateProgress(track) {
+    if (progressInterval) clearInterval(progressInterval); // Nettoie l'ancien intervalle
     progressBar.style.width = '0%';
-    if (track.duration) {
-        startTime = Date.now();
-        // Utiliser requestAnimationFrame pour une mise à jour plus fluide serait mieux, mais setInterval est simple
-        const interval = setInterval(() => {
-            if (!startTime) { // Vérifie si startTime a été réinitialisé (ex: changement de piste manuel)
-                 clearInterval(interval);
-                 return;
-            }
-            const elapsed = (Date.now() - startTime) / 1000;
-            const progress = Math.min((elapsed / track.duration) * 100, 100);
-            progressBar.style.width = `${progress}%`;
-            if (progress >= 100) {
-                 clearInterval(interval);
-            }
-        }, 500); // Mise à jour toutes les 500ms
+    progressBar.style.transition = 'none'; // Désactive la transition pour la réinitialisation
 
-        // Assurer que le timer global pour la prochaine piste gère l'arrêt de l'intervalle
-        if (nextTrackTimer) clearTimeout(nextTrackTimer); // Annule l'ancien timer avant d'en créer un nouveau
+    if (track && track.duration && track.duration > 0) {
+        startTime = Date.now();
+        const durationMs = track.duration * 1000;
+
+        // Force un reflow pour que la transition s'applique après la réinitialisation
+        void progressBar.offsetWidth;
+        progressBar.style.transition = `width ${track.duration}s linear`; // Applique la transition pour la durée de la piste
+        progressBar.style.width = '100%'; // Lance la barre de progression
+
+        // L'intervalle est moins précis que la transition CSS pour la barre elle-même,
+        // mais on garde le setTimeout pour déclencher la piste suivante.
+        if (nextTrackTimer) clearTimeout(nextTrackTimer);
         nextTrackTimer = setTimeout(() => {
-            clearInterval(interval); // Nettoie l'intervalle quand le timer expire
+            // Assurer que la barre est bien à 100% à la fin (au cas où le timer serait légèrement désynchronisé)
+            progressBar.style.transition = 'none'; // Désactive la transition pour la fin
+            progressBar.style.width = '100%';
             loadNextTrack();
-        }, track.duration * 1000 + 3000); // +3s de marge
+        }, durationMs + 1000); // +1s de marge pour finir la lecture
+
     } else {
-         // Si pas de durée, on ne peut pas avancer la barre ni timer la prochaine piste automatiquement
-         progressBar.style.width = '0%';
-         if (nextTrackTimer) clearTimeout(nextTrackTimer);
-         nextTrackTimer = null; // Pas de timer si pas de durée
+        // Pas de durée, pas de progression, pas de timer automatique
+        startTime = null;
+        progressBar.style.width = '0%';
+        if (nextTrackTimer) clearTimeout(nextTrackTimer);
+        nextTrackTimer = null;
     }
 }
 
@@ -200,128 +206,168 @@ function updateProgress(track) {
 function loadTrack(track) {
     if (!track || !track.id) {
         console.error("Tentative de chargement d'une piste invalide:", track);
-        iframeTarget.innerHTML = '<p class="loading-message">Erreur : Piste invalide sélectionnée.</p>';
-        nowPlayingText.textContent = 'Erreur de chargement';
-        // Essayer de charger une autre piste après un délai
-        setTimeout(loadNextTrack, 3000);
+        nowPlayingText.textContent = 'Erreur de sélection de piste.';
+        setTimeout(loadNextTrack, 3000); // Essaye à nouveau
         return;
     }
 
-    // Nettoyer l'ancien timer et réinitialiser startTime pour la barre de progression
+    // Nettoyage avant de charger la nouvelle piste
     if (nextTrackTimer) clearTimeout(nextTrackTimer);
-    startTime = null; // Important pour arrêter la mise à jour de la barre de progression précédente
+    if (progressInterval) clearInterval(progressInterval);
+    startTime = null;
+    progressBar.style.transition = 'none'; // Stoppe toute transition en cours
+    progressBar.style.width = '0%';       // Réinitialise la barre visuellement
+
 
     currentTrackId = track.id;
+    isLoading = true; // Marque comme en chargement
+    // Affichage message chargement pendant la création de l'iframe
+    iframeTarget.innerHTML = '<p class="loading-message">Chargement...</p>';
+
+
     const iframe = document.createElement('iframe');
     iframe.id = 'suno-iframe';
+    // Forcer l'autoplay est crucial ici
     iframe.src = `https://suno.com/embed/${track.id}?autoplay=true`;
     iframe.title = `Lecteur Suno pour ${track.title}`;
-    iframe.allow = 'autoplay';
-    iframe.loading = 'lazy'; // Le navigateur chargera quand il approche du viewport (peut ne pas être idéal pour préchargement audio)
-    iframe.onerror = () => {
-        console.error(`Erreur chargement iframe pour piste ID: ${track.id}`);
-        iframeTarget.innerHTML = '<p class="loading-message">Erreur : Impossible de charger ce morceau. Passage au suivant...</p>';
-        // Si une piste échoue, on passe à la suivante sans attendre la durée
-        setTimeout(loadNextTrack, 2000);
+    iframe.allow = 'autoplay; encrypted-media'; // Permissions
+    iframe.loading = 'eager'; // Charger immédiatement
+    iframe.sandbox = "allow-scripts allow-same-origin allow-presentation"; // Sandbox pour sécurité, ajuster si besoin
+
+    iframe.onload = () => {
+        console.log(`Iframe chargée pour ${track.title} (ID: ${track.id})`);
+        isLoading = false; // Fin du chargement principal de l'iframe
+        updatePlayHistory(track.id); // Met à jour l'historique et efface le message "Chargement..."
+        updateProgress(track);       // Démarre la progression et le timer suivant
+        preloadNextTrack();          // Précharge la piste suivante
     };
 
-    iframeTarget.innerHTML = ''; // Vide le conteneur
-    iframeTarget.appendChild(iframe);
-    updatePlayHistory(track.id); // Met à jour l'affichage et l'historique
-    updateProgress(track); // Démarre la barre de progression et le timer pour la *prochaine* piste
+    iframe.onerror = () => {
+        console.error(`Erreur chargement iframe pour piste ID: ${track.id}`);
+        iframeTarget.innerHTML = '<p class="loading-message">Erreur chargement morceau. Passage au suivant...</p>';
+        isLoading = false;
+        if (nextTrackTimer) clearTimeout(nextTrackTimer); // Annule le timer prévu
+        setTimeout(loadNextTrack, 3000); // Tente de charger une autre piste
+    };
 
-    // Préchargement de la piste suivante (après un court délai pour laisser la piste actuelle démarrer)
-    setTimeout(preloadNextTrack, 1000);
+    // Remplace le contenu précédent par la nouvelle iframe
+    iframeTarget.innerHTML = ''; // Vide le conteneur explicitement
+    iframeTarget.appendChild(iframe);
 }
 
 
 function loadNextTrack() {
-    if (!radioHasStarted || isLoading) return;
-    isLoading = true;
-    iframeTarget.innerHTML = '<p class="loading-message">Chargement du prochain morceau...</p>';
-    nowPlayingText.textContent = 'Sélection en cours...';
-    progressBar.style.width = '0%'; // Réinitialise la barre
-    if(nextTrackTimer) clearTimeout(nextTrackTimer); // Nettoie le timer précédent s'il existe
-    startTime = null; // Réinitialise startTime pour la progression
+    // Vérifications pour éviter chargements multiples ou inutiles
+    if (isLoading || !radioHasStarted) {
+        // console.log(`Chargement suivant annulé (isLoading: ${isLoading}, radioHasStarted: ${radioHasStarted})`);
+        return;
+    }
+    isLoading = true; // Marque le début du processus de chargement
 
+    // Affichage immédiat du statut
+    nowPlayingText.textContent = 'Sélection du prochain morceau...';
+    iframeTarget.innerHTML = '<p class="loading-message">Chargement...</p>'; // Message dans la zone iframe
+    progressBar.style.transition = 'none'; // Stoppe transition
+    progressBar.style.width = '0%';       // Réinitialise barre
+
+    // Nettoyage timers précédents
+    if (nextTrackTimer) clearTimeout(nextTrackTimer);
+    if (progressInterval) clearInterval(progressInterval);
+    startTime = null;
+
+    // Sélection et chargement différé pour laisser l'UI se mettre à jour
     setTimeout(() => {
-        const trackToLoad = nextTrackPreload || selectRandomTrack(); // Utilise la piste préchargée si disponible
+        const trackToLoad = nextTrackPreload || selectRandomTrack();
+        nextTrackPreload = null; // Réinitialise la piste préchargée
+
         if (trackToLoad) {
             loadTrack(trackToLoad);
-            // Le préchargement de la *prochaine* piste se fait maintenant dans loadTrack
+             // isLoading sera remis à false dans le iframe.onload
         } else {
-            iframeTarget.innerHTML = '<p class="loading-message">Erreur : Aucun morceau trouvé.</p>';
+            iframeTarget.innerHTML = '<p class="loading-message">Erreur : Aucun morceau disponible.</p>';
             nowPlayingText.textContent = 'Erreur de sélection';
+            isLoading = false; // Pas de chargement en cours si erreur de sélection
         }
-        isLoading = false;
-    }, 150); // Léger délai pour l'affichage du message de chargement
+    }, 150); // Délai court
 }
+
 
 function startRadioFirstTime() {
     if (radioHasStarted) return;
+    console.log("Démarrage de la radio...");
     radioHasStarted = true;
     initialOverlay.classList.add('hidden');
-    // Précharge la première piste avant de la charger
+    // On précharge puis on lance directement loadNextTrack
     preloadNextTrack();
-    // Charge la piste (qui utilisera nextTrackPreload si défini)
     loadNextTrack();
 }
 
 // Écouteurs d'événements
 function setupEventListeners() {
-    // Écouteur pour les boutons de catégorie supprimé
-
     initialOverlay.addEventListener('click', startRadioFirstTime);
+
     nextTrackButton.addEventListener('click', () => {
-        if (isLoading) return; // Empêche les clics multiples pendant le chargement
+        if (isLoading) return;
         if (!radioHasStarted) {
-             startRadioFirstTime(); // Lance la radio si ce n'est pas déjà fait
+             startRadioFirstTime();
         } else {
-             loadNextTrack(); // Charge la piste suivante
+             loadNextTrack();
         }
     });
 
     window.addEventListener('offline', () => {
-        // Gérer la perte de connexion
-        if (nextTrackTimer) clearTimeout(nextTrackTimer); // Arrête le timer pour la prochaine piste
-        iframeTarget.innerHTML = '<p class="loading-message">Connexion perdue. Veuillez vérifier votre réseau.</p>';
+        console.log("Connexion perdue.");
+        if (nextTrackTimer) clearTimeout(nextTrackTimer);
+        if (progressInterval) clearInterval(progressInterval);
+        isLoading = true; // Bloque les chargements futurs tant qu'offline
+        iframeTarget.innerHTML = '<p class="loading-message">Connexion Internet perdue...</p>';
         nowPlayingText.textContent = 'Mode hors ligne';
-        isLoading = true; // Bloque les chargements
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
     });
+
     window.addEventListener('online', () => {
-        // Gérer le retour de la connexion
+        console.log("Connexion rétablie.");
+        isLoading = false; // Permet à nouveau les chargements
         nowPlayingText.textContent = 'Connexion rétablie. Reprise...';
-        isLoading = false; // Débloque les chargements
         if (radioHasStarted) {
-             loadNextTrack(); // Relance la lecture
+             // On peut choisir de reprendre où ça s'est arrêté ou charger une nouvelle piste
+             loadNextTrack(); // Charge une nouvelle piste
         } else {
-            iframeTarget.innerHTML = ''; // Nettoie le message hors ligne si la radio n'avait pas démarré
-            nowPlayingText.textContent = ''; // Efface le message
+            // Si la radio n'avait pas démarré, on nettoie juste les messages
+            iframeTarget.innerHTML = '';
+            nowPlayingText.textContent = '';
         }
     });
 }
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM Chargé. Initialisation...");
     if (!sunoTracks || sunoTracks.length === 0) {
-        initialOverlay.innerHTML = '<p class="loading-message" style="color: red;">Erreur: Liste de morceaux vide !</p>';
-        // Désactiver le bouton start si pas de pistes
+        console.error("Liste de morceaux vide ! Application inutilisable.");
+        initialOverlay.innerHTML = '<p class="loading-message" style="color: red;">Erreur: Liste de morceaux vide ! Impossible de démarrer.</p>';
         if (startButton) startButton.disabled = true;
         if (nextTrackButton) nextTrackButton.disabled = true;
+        preloader.classList.add('hidden'); // Cacher le preloader même si erreur
         return;
     }
-    // updateCategoryButtons(); // Supprimé
+
     setupEventListeners();
 
-    // Cacher le preloader une fois la page chargée
+    // Cacher le preloader une fois que tout est prêt (DOM + potentiellement ressources critiques)
     window.addEventListener('load', () => {
+        console.log("Fenêtre chargée (ressources incluses).");
         preloader.classList.add('hidden');
     });
 
     // Enregistrement du Service Worker
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => console.log('Service Worker enregistré avec succès:', registration.scope))
-            .catch(err => console.error('Erreur enregistrement Service Worker:', err));
+        // Charger sw.js après le chargement de la page pour ne pas ralentir le rendu initial
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => console.log('Service Worker enregistré avec succès:', registration.scope))
+                .catch(err => console.error('Erreur enregistrement Service Worker:', err));
+        });
     }
 });
